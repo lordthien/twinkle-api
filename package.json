@@ -1,0 +1,33 @@
+{
+  "name": "twinkle-api",
+  "version": "1.0.0",
+  "description": "Twinkle is a salon booking app",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --inspect index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JasonAnger/twinkle-api.git"
+  },
+  "keywords": [
+    "#javascript"
+  ],
+  "author": "Jay An",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JasonAnger/twinkle-api/issues"
+  },
+  "homepage": "https://github.com/JasonAnger/twinkle-api#readme",
+  "dependencies": {
+    "compression": "^1.7.4",
+    "connect-multiparty": "^2.2.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-robots-txt": "^0.5.0",
+    "mongoose": "^5.12.2",
+    "multer": "^1.4.2",
+    "nodemon": "^2.0.7"
+  }
+}
