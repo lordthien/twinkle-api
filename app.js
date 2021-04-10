@@ -1,16 +1,14 @@
 const express = require('express')
-const http = require('http')
-const https = require('https')
 const compression = require('compression')
 const robots = require('express-robots-txt')
 const fs = require('fs')
 const bodyParser = require('body-parser')
 const multer = require('multer')
-const mongoose = require('mongoose')
 const multipart = require('connect-multiparty')
 const path = require('path')
 
 const ownerRouter = require('./routers/owner.route.js')
+const managerRouter = require('./routers/manager.route.js')
 
 const multipartMiddleware = multipart()
 
@@ -21,10 +19,16 @@ const app = express()
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+
+app.use(cors())
+
 app.use(robots(__dirname + '/robots.txt'))
 app.use(compression())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
+
+app.use('/public', express.static('public'))
+app.use(express.static('node_modules'))
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -37,15 +41,11 @@ const storage = multer.diskStorage({
   })
 const upload = multer({ storage: storage })
 
-app.use(bodyParser.json()) // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-
-app.use(express.static('public'))
-app.use(express.static('node_modules'))
-
 app.get('/', async (req,res) => {
     res.send("Home")
 })
+
+app.use('/manager', managerRouter)
 
 app.use('/onwer', ownerRouter)
 

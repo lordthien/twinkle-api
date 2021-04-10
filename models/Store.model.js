@@ -2,11 +2,12 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const url = require('url')
 
-
-const ownerSchema = new Schema({
+const storeSchema = new Schema({
   _id: mongoose.Types.ObjectId,
   //Storing some basic information of user
   name: { type: String, default: '' },
+  username: { type: String, unique: true },
+  password: { type: String },
   avatar: { type: String, default: 'public/avatar/default.png' },
   address: { type: String, default: '' },
   phoneNumber: { type: String, default: '' },
@@ -28,27 +29,26 @@ const ownerSchema = new Schema({
   }]
 })
 
-ownerSchema.methods.toJSON = function () {
-  const owner = this
-  const ownerObject = owner.toObject()
+storeSchema.methods.toJSON = function () {
+  const store = this
+  const storeObject = store.toObject()
   // Replace cai \ thanh cai / ni
-  ownerObject.avatar = ownerObject.avatar.replace('\\', '/').replace('\\', '/')
-  for (let i = 0; i < ownerObject.photos.length; i++) {
-    ownerObject.photos[i] = ownerObject.photos[i].replace('\\', '/').replace('\\', '/')
+  storeObject.avatar = storeObject.avatar.replace('\\', '/').replace('\\', '/')
+  for (let i = 0; i < storeObject.photos.length; i++) {
+    storeObject.photos[i] = storeObject.photos[i].replace('\\', '/').replace('\\', '/')
   }
-  ownerObject.phoneNumber = ownerObject.phoneNumber.split("\n", 10)
-  ownerObject.address = ownerObject.address.split("\n", 10) 
-  ownerObject.description = ownerObject.description.split("\n", 20)
+  storeObject.address = storeObject.address.split("\n", 10) 
+  storeObject.description = storeObject.description.split("\n", 20)
   var sum = 0
-  ownerObject.reviews.forEach((review) => {
+  storeObject.reviews.forEach((review) => {
     sum = sum + review.point
   })
-  if (sum) ownerObject.averagePoint = (sum / ownerObject.reviews.length)
+  if (sum) ownerObject.averagePoint = (sum / storeObject.reviews.length)
   else ownerObject.averagePoint = 0
   return ownerObject
 }
 
 
-const Owner = mongoose.model('Owner', ownerSchema, 'owners')
+const Store = mongoose.model('Store', storeSchema, 'stores')
 
-module.exports = Owner
+module.exports = Store
