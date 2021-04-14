@@ -43,9 +43,9 @@ storeSchema.methods.toJSON = function () {
   storeObject.reviews.forEach((review) => {
     sum = sum + review.point
   })
-  if (sum) ownerObject.averagePoint = (sum / storeObject.reviews.length)
-  else ownerObject.averagePoint = 0
-  return ownerObject
+  if (sum) storeObject.averagePoint = (sum / storeObject.reviews.length)
+  else storeObject.averagePoint = 0
+  return storeObject
 }
 
 

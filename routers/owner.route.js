@@ -3,7 +3,7 @@ const multer = require('multer')
 
 const router = express.Router()
 
-const controller = require('../controllers/ownerController')
+const controller = require('../controllers/storeController')
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

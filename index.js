@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000
 const hostname = "twinkle.app"
 
 
-mongoose.connect(process.env.MONGODB, {useNewUrlParser: true, useUnifiedTopology: true}).then(() => {
+mongoose.connect(process.env.MONGODB, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: true}).then(() => {
     console.log("Mongo Connection is success.")
 }).catch(error => handleError(error))
 

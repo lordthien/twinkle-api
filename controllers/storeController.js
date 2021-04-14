@@ -1,4 +1,4 @@
-const Store = require('../models/owner.model')
+const Store = require('../models/Store.model')
 const mongoose = require('mongoose')
 
 module.exports.createNewStore = async (req, res) => {

@@ -6,6 +6,9 @@ const bodyParser = require('body-parser')
 const multer = require('multer')
 const multipart = require('connect-multiparty')
 const path = require('path')
+const cors = require('cors')
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 const ownerRouter = require('./routers/owner.route.js')
 const managerRouter = require('./routers/manager.route.js')
@@ -44,6 +47,8 @@ const upload = multer({ storage: storage })
 app.get('/', async (req,res) => {
     res.send("Home")
 })
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/manager', managerRouter)
 
