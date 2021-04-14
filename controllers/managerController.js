@@ -19,21 +19,50 @@ let grantRoleAllFeature = async (roleId) => {
 
 module.exports.login = async (req, res) => {
     try {
-        res.status(200).json({status: "Success"})
+        var manager = await Manager.findOne({ username: req.body.username })
+        if (!manager) {
+            res.status(400).json({ message: 'User does not exist.', status: "Failed"})
+            return
+        }
+        //let hashedPassword = md5(req.body.password) + req.body.username
+        // bcrypt.compare(hashedPassword, user.hash).then(async (result) => {
+        //     if (!result) {
+        //         res.status(500).send({
+        //             errors: ['Wrong password!']
+        //         })
+        //         return
+        //     }
+        //     else {
+                
+        //     }
+        // })
+        if(req.body.password==manager.password) {
+            const token = await manager.generateAuthToken()
+            res.status(200).json({ manager, token, status: "Success" })
+        }
+        else {
+            res.status(400).json({ message: 'Wrong password.', status: "Failed"})
+        }
     } catch (err) {
         res.status(400).json({error:err})
     }
 }
 module.exports.logout = async (req, res) => {
     try {
-        res.status(200).json({status: "Success"})
-    } catch (err) {
+        req.manager.tokens = req.manager.tokens.filter((token) => {
+            return token.token !== req.token
+        })
+        await req.manager.save()
+        res.status(200).json({message: 'Successfully logout', status: "Success"})
+    } catch (e) {
         res.status(400).json({error:err})
     }
 }
 module.exports.logoutAll = async (req, res) => {
     try {
-        res.status(200).json({status: "Success"})
+        req.manager.tokens = []
+        await req.manager.save()
+        res.status(200).json({message: 'Successfully logout from all devices', status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }
@@ -41,7 +70,7 @@ module.exports.logoutAll = async (req, res) => {
 
 module.exports.getMyInformation = async (req, res) => {
     try {
-        res.status(200).json({status: "Success"})
+        res.status(200).json({manager: req.manager, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }

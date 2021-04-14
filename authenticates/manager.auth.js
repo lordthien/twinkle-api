@@ -6,7 +6,10 @@ module.exports = async (req, res, next) => {
     try {
         const token = req.header('Authorization').replace('Bearer ', '')
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
-        const manager = await Manager.findOne({ _id: decoded._id, 'tokens.token': token }).populate('role')
+        const manager = await Manager.findOne({ username: decoded.data, 'tokens.token': token })
+        .populate({path: 'role', populate: {
+            path: 'features'
+        }})
         if (!manager) {
             next()
         }
@@ -15,6 +18,6 @@ module.exports = async (req, res, next) => {
         next()
         
     } catch (e) {
-        res.status(401).send('Error Authenticate.')
+        res.status(401).json({message: 'Error Authenticate.', status: "Failed"})
     }
 }

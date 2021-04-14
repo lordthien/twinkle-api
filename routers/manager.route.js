@@ -9,12 +9,12 @@ const controller = require('../controllers/managerController')
 
 //Login, Logout
 router.post('/login', controller.login)
-router.post('/logout', //managerAuth, 
+router.post('/logout', managerAuth, 
 controller.logout)
-router.post('/logoutAll', //managerAuth, 
+router.post('/logoutAll', managerAuth, 
 controller.logoutAll)
 
-router.get('/me', //managerAuth, 
+router.get('/me', managerAuth, 
 controller.getMyInformation)
 router.get('/allFeatures', //managerAuth, 
 controller.getAllFeatures)
