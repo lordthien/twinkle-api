@@ -1,28 +1,55 @@
 const Store = require('../models/Store.model')
 const mongoose = require('mongoose')
 
-module.exports.createNewStore = async (req, res) => {
+
+module.exports.login = async (req, res) => {
     try {
-        var newStore = new Store({
-            _id: new mongoose.Types.ObjectId,
-            name: req.body.name,
-            address: req.body.address,
-            phoneNumber: req.body.phoneNumber,
-            openTime: req.body.openTime,
-            description: req.body.description,
-            storeType: req.body.storeType
-        })
-        if (req.files.length != 0) {
-            for (let i = 0; i < req.files.length - 1; i++) {
-                newStore.photos.push(req.files[i].path)
-            }
-            newStore.avatar = req.files[req.files.length - 1].path
+        let store = await Store.findOne({ username: req.body.username })
+        if (!store) {
+            res.status(400).json({ message: 'User does not exist.', status: "Failed"})
+            return
         }
-        newStore.save().then(() => {
-            res.status(200).send(newStore)
-        })
+        //let hashedPassword = md5(req.body.password) + req.body.username
+        // bcrypt.compare(hashedPassword, user.hash).then(async (result) => {
+        //     if (!result) {
+        //         res.status(500).send({
+        //             errors: ['Wrong password!']
+        //         })
+        //         return
+        //     }
+        //     else {
+                
+        //     }
+        // })
+        if(req.body.password==store.password) {
+            const token = await store.generateAuthToken()
+            res.status(200).json({ store, token, status: "Success" })
+        }
+        else {
+            res.status(400).json({ message: 'Wrong password.', status: "Failed"})
+        }
     } catch (err) {
-        res.status(400).send(err)
+        res.status(400).json({error:err})
+    }
+}
+module.exports.logout = async (req, res) => {
+    try {
+        req.store.tokens = req.store.tokens.filter((token) => {
+            return token.token !== req.token
+        })
+        await req.store.save()
+        res.status(200).json({message: 'Successfully logout', status: "Success"})
+    } catch (e) {
+        res.status(400).json({error:err})
+    }
+}
+module.exports.logoutAll = async (req, res) => {
+    try {
+        req.store.tokens = []
+        await req.store.save()
+        res.status(200).json({message: 'Successfully logout from all devices', status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
     }
 }
 

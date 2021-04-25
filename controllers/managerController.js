@@ -3,7 +3,13 @@ const bcrypt = require('bcrypt')
 const Manager = require('../models/Manager.model')
 const Feature = require('../models/Feature.model')
 const Role = require('../models/Role.model')
+const Store = require('../models/Store.model')
 const mongoose = require('mongoose')
+const shortid = require('shortid')
+const sgMail = require('@sendgrid/mail')
+
+require('dotenv').config()
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 let grantRoleAllFeature = async (roleId) => {
     let features = await Feature.find()
@@ -91,12 +97,20 @@ module.exports.getAllRoles  = async (req, res) => {
         res.status(400).json({error:err})
     }
 }
-module.exports.getAllManager  = async (req, res) => {
+module.exports.getAllManagers  = async (req, res) => {
     try {
         const managers = await Manager.find().populate({path: 'role', populate: {
             path: 'features'
         }})
         res.status(200).json({managers: managers,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+module.exports.getAllStores  = async (req, res) => {
+    try {
+        const stores = await Store.find().populate('reviews').populate('photos')
+        res.status(200).json({stores: stores,status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }
@@ -118,7 +132,7 @@ module.exports.createFeature  = async (req, res) => {
 
 module.exports.createRole  = async (req, res) => {
     try {
-        req.body._id= new mongoose.Types.ObjectId()
+        req.body._id = new mongoose.Types.ObjectId()
         const newRole = new Role(req.body)
         newRole.save().then(() => {
             res.status(200).json({role: newRole,status: "Success"})
@@ -142,6 +156,33 @@ module.exports.createManager  = async (req, res) => {
 module.exports.createCoupon = async (req, res) => {
     try {
         res.status(200).json({status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.createStore = async (req, res) => {
+    if(req.manager.role.roleTitle=="System Owner")
+    try {
+        req.body._id = new mongoose.Types.ObjectId()
+        req.body.password = shortid.generate()
+        let newStore = new Store(req.body)
+        newStore.save().then(() => {
+            const msg = {
+                to: newStore.email,
+                from: 'noreply@twinkleapp.tk',
+                subject: 'Successful Creating Store on Twinkle',
+                html: `<strong>${newStore.password}</strong>`
+            }
+            sgMail.send(msg).then(() => {
+                res.status(200).json({status: "Success"})
+            }, error => {
+                console.error(error);
+                if (error.response) {
+                console.error(error.response.body)
+                }
+            });
+        })
     } catch (err) {
         res.status(400).json({error:err})
     }
@@ -236,6 +277,25 @@ module.exports.deleteRole = async (req, res) => {
             Role.findOneAndDelete({_id: req.body.id}, (error,result) => {
                 if(error) {
                     res.status(400).json({error:err})
+                }
+                else {
+                    res.status(200).json({result: result, status: "Success"})
+                }  
+            })
+        }
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+module.exports.deleteStore = async (req, res) => {
+    try {
+        if(req.manager.roleTitle=="System Owner") {
+            res.status(400).json({message: "System Owner role cannot be deleted.", status: "Success"})
+        }
+        else {
+            Store.findOneAndDelete({_id: req.body.id}, (error,result) => {
+                if(error) {
+                    res.status(400).json({error: error})
                 }
                 else {
                     res.status(200).json({result: result, status: "Success"})

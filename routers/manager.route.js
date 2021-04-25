@@ -21,7 +21,9 @@ controller.getAllFeatures)
 router.get('/allRoles', //managerAuth, 
 controller.getAllRoles)
 router.get('/allManagers', //managerAuth, 
-controller.getAllManager)
+controller.getAllManagers)
+router.get('/allStores', //managerAuth, 
+controller.getAllStores)
 
 //Create features, roles, manager for manager
 router.post('/createFeature', //managerAuth, 
@@ -32,6 +34,10 @@ router.post('/createManager', //managerAuth,
 controller.createManager)
 router.post('/createCoupon', //managerAuth, 
 controller.createCoupon)
+router.post('/createStore', managerAuth, 
+controller.createStore)
+
+
 
 router.put('/updateFeature', //managerAuth,
 controller.changeFeature)
@@ -47,11 +53,13 @@ controller.addAllFeaturesToRole)
 router.patch('/removeFeature', //managerAuth,
 controller.removeFeatureFromRole)
 
-router.delete('/deleteFeature', //managerAuth
+router.delete('/deleteFeature', //managerAuth,
 controller.deleteFeature)
-router.delete('/deleteRole', //managerAuth
+router.delete('/deleteRole', //managerAuth,
 controller.deleteRole)
-router.delete('/deleteManager', //managerAuth
+router.delete('/deleteManager', //managerAuth,
 controller.deleteManager)
+router.delete('/deleteStore', managerAuth,
+controller.deleteStore)
 
 module.exports = router

@@ -1,13 +1,16 @@
 const mongoose = require('mongoose')
+const Store = require('./Store.model')
 const Schema = mongoose.Schema
 
-
-const featureSchema = new Schema({
+const discountSchema = new Schema({
   _id: mongoose.Types.ObjectId,
-  title: String,
-  description: String
+  name: String,
+  code: String,
+  description: String,
+  expiration: Date,
+  appliedStore: [{type: mongoose.Types.ObjectId, ref: Store}]
 })
 
-const Feature = mongoose.model('Feature', featureSchema, 'features')
+const Discount = mongoose.model('Discount', discountSchema, 'discounts')
 
-module.exports = Feature
+module.exports = Discount

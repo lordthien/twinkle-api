@@ -16,7 +16,7 @@ const managerSchema = new Schema({
 managerSchema.methods.generateAuthToken = async function () {
   try {
     let manager = this
-    let token = jwt.sign({ data: manager.username },process.env.JWT_SECRET, { expiresIn: '1h'})
+    let token = jwt.sign({ data: manager.username },process.env.JWT_SECRET, { expiresIn: '30 days'})
     manager.tokens = manager.tokens.concat({ token })
     await manager.save()
     return token

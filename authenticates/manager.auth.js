@@ -18,6 +18,6 @@ module.exports = async (req, res, next) => {
         next()
         
     } catch (e) {
-        res.status(401).json({message: 'Error Authenticate.', status: "Failed"})
+        res.status(401).json({message: 'Error Authenticate.', errorMessage: e.message , status: "Failed"})
     }
 }

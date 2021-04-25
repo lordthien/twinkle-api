@@ -1,9 +1,9 @@
 const express = require('express')
-const multer = require('multer')
-
 const router = express.Router()
-
 const controller = require('../controllers/storeController')
+const multer = require('multer')
+const storeAuth = require('../authenticates/storeOwner.auth')
+
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -27,18 +27,8 @@ const upload = multer({
     }
 })
 
-router.post('/', controller.createNewStore)
-
-// router.get('/search', controller.search)
-
-// router.patch('/:id', upload.array('photos', 8), controller.patchByID)
-
-// router.get('/:id', controller.getByID)
-
-// router.post('/:id', authLogin, upload.array('photos', 4), controller.postByID)
-
-// router.get('/:id/product', controller.getProductByID)
-
-// router.post('/:id/product', authLogin, upload.array('photos', 4), controller.postProductByID)
+router.post('/login', controller.login)
+router.post('/logout', storeAuth, controller.logout)
+router.post('/logoutAll', storeAuth, controller.logoutAll)
 
 module.exports = router

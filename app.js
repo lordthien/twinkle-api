@@ -10,7 +10,7 @@ const cors = require('cors')
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
-const ownerRouter = require('./routers/owner.route.js')
+const storeRouter = require('./routers/owner.route.js')
 const managerRouter = require('./routers/manager.route.js')
 
 const multipartMiddleware = multipart()
@@ -52,7 +52,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/manager', managerRouter)
 
-app.use('/onwer', ownerRouter)
+app.use('/store', storeRouter)
 
 app.post("/upload", multipartMiddleware, (req, res) => {
     try {

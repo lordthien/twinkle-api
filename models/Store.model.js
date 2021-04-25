@@ -1,32 +1,31 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const url = require('url')
+const jwt = require('jsonwebtoken')
+const Review = require('./Review.model')
+const Photo = require('./Photo.model')
 
 const storeSchema = new Schema({
   _id: mongoose.Types.ObjectId,
   //Storing some basic information of user
   name: { type: String, default: '' },
-  username: { type: String, unique: true },
-  password: { type: String },
-  avatar: { type: String, default: 'public/avatar/default.png' },
+  username: { type: String, unique: true, trim: true },
+  email: { type: String },
+  password: { type: String, trim: true },
+  avatar: { type: String, default: '/stores/default.png' },
   address: { type: String, default: '' },
+  location: { latitude: String, longitude: String },
   phoneNumber: { type: String, default: '' },
   openTime: { type: String, default: '' },
   description: { type: String, default: '' },
-  photos: [String],
-  //Type of Store: Pet Care? Pet Cafe? Pet Shop?
+  photos: [{ type: mongoose.Types.ObjectId, ref: Photo}],
+  //Type of Store
   storeType: { type: String, default: '' },
-  //Store Owner is also a user but have a medal to improve that this user is a store owner
-  storeOwner: { type: mongoose.Types.ObjectId, default: null },
   //Reviews
-  reviews: [{
-    reviewer: mongoose.Types.ObjectId,
-    author: String,
-    avatar: String,
-    point: { type: Number, default: 4 },
-    body: String,
-    photos: [String]
-  }]
+  reviews: [{type: mongoose.Types.ObjectId, ref: Review}],
+  tokens: [{token: String}],
+  //Store Owner is also a user but have a medal to improve that this user is a store owner
+  // storeOwner: { type: mongoose.Types.ObjectId, default: null },
 })
 
 storeSchema.methods.toJSON = function () {
@@ -48,6 +47,17 @@ storeSchema.methods.toJSON = function () {
   return storeObject
 }
 
+storeSchema.methods.generateAuthToken = async function () {
+  try {
+    let store = this
+    let token = jwt.sign({ data: store.username },process.env.JWT_SECRET, { expiresIn: '30 days'})
+    store.tokens = store.tokens.concat({ token })
+    await store.save()
+    return token
+  } catch (e) {
+    console.log(e)
+  }
+}
 
 const Store = mongoose.model('Store', storeSchema, 'stores')
 
