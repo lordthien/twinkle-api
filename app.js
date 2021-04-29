@@ -10,6 +10,7 @@ const cors = require('cors')
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
+const appRouter = require('./routers/app.route.js')
 const storeRouter = require('./routers/owner.route.js')
 const managerRouter = require('./routers/manager.route.js')
 
@@ -49,6 +50,8 @@ app.get('/', async (req,res) => {
 })
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.use('/app', appRouter)
 
 app.use('/manager', managerRouter)
 

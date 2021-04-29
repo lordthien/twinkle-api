@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
-const Customer = require('./Customer.model')
 const Schema = mongoose.Schema
+
+const Photo = require('./Photo.model')
 
 
 const reviewSchema = new Schema({
@@ -8,7 +9,9 @@ const reviewSchema = new Schema({
   title: String,
   content: String,
   ratingPoint: Number,
-  customerId: {type: mongoose.Types.ObjectId, ref: Customer}
+  customerId: String,
+  storeId: String,
+  photos: [{type: mongoose.Types.ObjectId, ref: Photo}],
 })
 
 const Review = mongoose.model('Review', reviewSchema, 'reviews')

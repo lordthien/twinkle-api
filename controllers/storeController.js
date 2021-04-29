@@ -75,3 +75,67 @@ module.exports.patchByID = async (req, res) => {
         res.status(500).send(e)
     }
 }
+
+module.exports.getAllStaffs = async (req, res) => {
+    try {
+        res.status(200).json({stores: stores,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.getAllServices = async (req, res) => {
+    try {
+        res.status(200).json({stores: stores,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.getAllBooks = async (req, res) => {
+    try {
+        res.status(200).json({stores: stores,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.createService = async (req, res) => {
+    try {
+        res.status(200).json({stores: stores,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.createStaff = async (req, res) => {
+    try {
+        res.status(200).json({stores: stores,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.editStoreInformation = async (req, res) => {
+    try {
+        res.status(200).json({stores: stores,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.editService = async (req, res) => {
+    try {
+        res.status(200).json({stores: stores,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.editStaff = async (req, res) => {
+    try {
+        res.status(200).json({stores: stores,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}

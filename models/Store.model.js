@@ -4,6 +4,7 @@ const url = require('url')
 const jwt = require('jsonwebtoken')
 const Review = require('./Review.model')
 const Photo = require('./Photo.model')
+const StoreType = require('./StoreType.model')
 
 const storeSchema = new Schema({
   _id: mongoose.Types.ObjectId,
@@ -20,7 +21,7 @@ const storeSchema = new Schema({
   description: { type: String, default: '' },
   photos: [{ type: mongoose.Types.ObjectId, ref: Photo}],
   //Type of Store
-  storeType: { type: String, default: '' },
+  type: { type: mongoose.Types.ObjectId, ref: StoreType },
   //Reviews
   reviews: [{type: mongoose.Types.ObjectId, ref: Review}],
   tokens: [{token: String}],
