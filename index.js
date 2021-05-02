@@ -1,8 +1,11 @@
 const http = require('http')
 const https = require('https')
+const cors = require('cors')
 const mongoose = require('mongoose')
 
 const app = require('./app')
+
+app.use(cors())
 
 require('dotenv').config()
 

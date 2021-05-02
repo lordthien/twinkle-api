@@ -5,7 +5,7 @@ const storeTypeSchema = new Schema({
   _id: mongoose.Types.ObjectId,
   //Storing some basic information of user
   title: { type: String, default: '' },
-  thumbnail: { type: String, default: '/stores/default.png' },
+  thumbnail: { type: String, default: '/storeTypes/default.png' },
   description: { type: String, default: '' },
 })
 

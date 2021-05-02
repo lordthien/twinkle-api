@@ -7,27 +7,16 @@ const Store = require('../models/Store.model')
 const mongoose = require('mongoose')
 const shortid = require('shortid')
 const sgMail = require('@sendgrid/mail')
+const StoreType = require('../models/StoreType.model')
 
 require('dotenv').config()
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-let grantRoleAllFeature = async (roleId) => {
-    let features = await Feature.find()
-    let newFeatures = []
-    for(let i=0; i<features.length; i++) {
-        newFeatures.push(features[i]._id)
-    }
-    console.log(newFeatures)
-    Role.findOneAndUpdate({_id: roleId}, {features: newFeatures}).then((result) => {
-        return(result)
-    })
-}
 
 module.exports.login = async (req, res) => {
     try {
         var manager = await Manager.findOne({ username: req.body.username })
         if (!manager) {
-            res.status(400).json({ message: 'User does not exist.', status: "Failed"})
+            res.status(204).json({ message: 'User does not exist.', status: "Failed"})
             return
         }
         //let hashedPassword = md5(req.body.password) + req.body.username
@@ -47,7 +36,7 @@ module.exports.login = async (req, res) => {
             res.status(200).json({ manager, token, status: "Success" })
         }
         else {
-            res.status(400).json({ message: 'Wrong password.', status: "Failed"})
+            res.status(204).json({ message: 'Wrong password.', status: "Failed"})
         }
     } catch (err) {
         res.status(400).json({error:err})
@@ -111,6 +100,14 @@ module.exports.getAllStores  = async (req, res) => {
     try {
         const stores = await Store.find().populate('reviews').populate('photos')
         res.status(200).json({stores: stores,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+module.exports.getAllStoreTypes  = async (req, res) => {
+    try {
+        const storeTypes = await StoreType.find()
+        res.status(200).json({storeTypes: storeTypes,status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }
@@ -309,6 +306,18 @@ module.exports.deleteStore = async (req, res) => {
 module.exports.deleteManager = async (req, res) => {
     try {
         res.status(200).json({status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.editStore = async (req, res) => {
+    if(req.manager.role.roleTitle=="System Owner")
+    try {
+        let store = new Store.findByIdAndUpdate(req.query.id,req.body)
+        store.save().then(() => {
+            res.status(200).json({store: store,status: "Success"})
+        })
     } catch (err) {
         res.status(400).json({error:err})
     }

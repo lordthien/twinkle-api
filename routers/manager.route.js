@@ -24,6 +24,8 @@ router.get('/allManagers', //managerAuth,
 controller.getAllManagers)
 router.get('/allStores', //managerAuth, 
 controller.getAllStores)
+router.get('/allStoreTypes', //managerAuth, 
+controller.getAllStoreTypes)
 
 //Create features, roles, manager for manager
 router.post('/createFeature', //managerAuth, 
