@@ -1,6 +1,28 @@
 const express = require('express')
 const multer = require('multer')
 
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './public/stores/')
+    },
+    filename: (req, file, cb) => {
+        cb(null, new Date().getTime() + file.originalname)
+    }
+})
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 24000000
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            return cb(new Error('Please upload an image'))
+        }
+
+        cb(undefined, true)
+    }
+})
+
 const router = express.Router()
 
 const managerAuth = require('../authenticates/manager.auth')
@@ -36,29 +58,33 @@ router.post('/createManager', //managerAuth,
 controller.createManager)
 router.post('/createCoupon', //managerAuth, 
 controller.createCoupon)
-router.post('/createStore', managerAuth, 
+router.post('/createStore', managerAuth, upload.single("avatar"),
 controller.createStore)
+router.post('/createStoreType', managerAuth, upload.single("thumbnail"),
+controller.createStoreType)
 
 
 
-router.put('/updateFeature', //managerAuth,
-controller.changeFeature)
-router.put('/updateRole', //managerAuth, 
-controller.changeRole)
-router.put('/updateManager', //managerAuth,
-controller.changeManager)
+// router.put('/updateFeature', //managerAuth,
+// controller.changeFeature)
+// router.put('/updateRole', //managerAuth, 
+// controller.changeRole)
+// router.put('/updateManager', //managerAuth,
+// controller.changeManager)
 
-router.patch('/addFeature', //managerAuth,
-controller.addFeatureToRole)
-router.patch('/addAllFeatures', //managerAuth,
-controller.addAllFeaturesToRole)
-router.patch('/removeFeature', //managerAuth,
-controller.removeFeatureFromRole)
+// router.patch('/addFeature', //managerAuth,
+// controller.addFeatureToRole)
+// router.patch('/addAllFeatures', //managerAuth,
+// controller.addAllFeaturesToRole)
+// router.patch('/removeFeature', //managerAuth,
+// controller.removeFeatureFromRole)
+router.patch('/editStore', managerAuth, managerAuth, upload.single("avatar"),
+controller.editStore)
 
-router.delete('/deleteFeature', //managerAuth,
-controller.deleteFeature)
-router.delete('/deleteRole', //managerAuth,
-controller.deleteRole)
+// router.delete('/deleteFeature', //managerAuth,
+// controller.deleteFeature)
+// router.delete('/deleteRole', //managerAuth,
+// controller.deleteRole)
 router.delete('/deleteManager', //managerAuth,
 controller.deleteManager)
 router.delete('/deleteStore', managerAuth,

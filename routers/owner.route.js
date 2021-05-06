@@ -4,7 +4,6 @@ const controller = require('../controllers/storeController')
 const multer = require('multer')
 const storeAuth = require('../authenticates/storeOwner.auth')
 
-
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './public/owner/')

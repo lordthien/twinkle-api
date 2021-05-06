@@ -21,7 +21,7 @@ const storeSchema = new Schema({
   description: { type: String, default: '' },
   photos: [{ type: mongoose.Types.ObjectId, ref: Photo}],
   //Type of Store
-  type: { type: mongoose.Types.ObjectId, ref: StoreType },
+  storeType: { type: mongoose.Types.ObjectId, ref: StoreType },
   //Reviews
   reviews: [{type: mongoose.Types.ObjectId, ref: Review}],
   tokens: [{token: String}],

@@ -98,7 +98,7 @@ module.exports.getAllManagers  = async (req, res) => {
 }
 module.exports.getAllStores  = async (req, res) => {
     try {
-        const stores = await Store.find().populate('reviews').populate('photos')
+        const stores = await Store.find().populate('storeType').populate('reviews').populate('photos')
         res.status(200).json({stores: stores,status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
@@ -185,105 +185,153 @@ module.exports.createStore = async (req, res) => {
     }
 }
 
-module.exports.changeRole  = async (req, res) => {
+module.exports.createStore = async (req, res) => {
+    if(req.manager.role.roleTitle=="System Owner")
     try {
-        res.status(200).json({status: "Success"})
-    } catch (err) {
-        res.status(400).json({error:err})
-    }
-}
-module.exports.changeFeature  = async (req, res) => {
-    try {
-        res.status(200).json({status: "Success"})
-    } catch (err) {
-        res.status(400).json({error:err})
-    }
-}
-module.exports.changeManager = async (req, res) => {
-    try {
-        res.status(200).json({status: "Success"})
-    } catch (err) {
-        res.status(400).json({error:err})
-    }
-}
-
-module.exports.addFeatureToRole = async (req, res) => {
-    try {
-        const role = await Role.findOne({_id: req.query.roleId})
-        if(!role.features.includes(req.body.featureId)) {
-            Role.findOneAndUpdate({_id: req.query.roleId}, { $push: {"features":new mongoose.Types.ObjectId(req.body.featureId)}})
-            .then( (result)  => { 
-                res.status(200).json({feature: result, status: "Success"}) 
-            }).catch((error) => {
-                res.status(400).json({error:err})
-            })
-        }
-        else {
-            res.status(400).json({message: "The role already has the feature", status: "Failed"}) 
-        }
-    } catch (err) {
-        res.status(400).json({error:err})
-    }
-}
-
-module.exports.addAllFeaturesToRole = async (req, res) => {
-    try {
-        grantRoleAllFeature(req.query.roleId)
-        res.status(200).json({message: "Grant all features.", status: "Success"}) 
-    } catch (err) {
-        res.status(400).json({error:err})
-    }
-}
-
-module.exports.removeFeatureFromRole = async (req, res) => {
-    try {
-        let role = await Role.findOne({_id: req.query.roleId})
-        role.features=role.features.filter(e => e.toString()!==req.body.featureId)
-        console.log(role)
-        Role.findOneAndUpdate({_id: req.query.roleId}, {features: role.features} ).then( (result)  => { 
-            res.status(200).json({feature: result, status: "Success"}) 
-        }).catch((error) => {
-            res.status(400).json({error:err})
-        })
-    } catch (err) {
-        res.status(400).json({error:err})
-    }
-}
-
-module.exports.deleteFeature = async (req, res) => {
-    try {
-        Feature.findOneAndDelete({_id: req.body.id}, (error,result) => {
-            if(error) {
-                res.status(400).json({error:err})
+        req.body._id = new mongoose.Types.ObjectId()
+        req.body.password = shortid.generate()
+        if(req.file) {
+            while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
+            req.body.avatar = `/${req.file.path}`
+        } 
+        let newStore = new Store(req.body)
+        newStore.save().then(() => {
+            const msg = {
+                to: newStore.email,
+                from: 'noreply@twinkleapp.tk',
+                subject: 'Successful Creating Store on Twinkle',
+                html: `<strong>${newStore.password}</strong>`
             }
-            else {
-                res.status(200).json({result: result, status: "Success"})
-            }  
+            sgMail.send(msg).then(() => {
+                res.status(200).json({status: "Success"})
+            }, error => {
+                console.error(error);
+                if (error.response) {
+                console.error(error.response.body)
+                }
+            });
         })
     } catch (err) {
         res.status(400).json({error:err})
     }
 }
-module.exports.deleteRole = async (req, res) => {
+
+module.exports.createStoreType = async (req, res) => {
+    if(req.manager.role.roleTitle=="System Owner")
     try {
-        let role = await Role.findOne({_id: req.body.id})
-        if(role.roleTitle=="System Owner") {
-            res.status(400).json({message: "System Owner role cannot be deleted.", status: "Success"})
-        }
-        else {
-            Role.findOneAndDelete({_id: req.body.id}, (error,result) => {
-                if(error) {
-                    res.status(400).json({error:err})
-                }
-                else {
-                    res.status(200).json({result: result, status: "Success"})
-                }  
-            })
-        }
+        req.body._id = new mongoose.Types.ObjectId()
+        if(req.file) {
+            while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
+            req.body.thumbnail = `/${req.file.path}`
+        } 
+        let newType = new StoreType(req.body)
+        newType.save().then(() => {
+            res.status(200).json({data: newType, status: "Success"})
+        })
     } catch (err) {
         res.status(400).json({error:err})
     }
 }
+
+// module.exports.changeRole  = async (req, res) => {
+//     try {
+//         res.status(200).json({status: "Success"})
+//     } catch (err) {
+//         res.status(400).json({error:err})
+//     }
+// }
+// module.exports.changeFeature  = async (req, res) => {
+//     try {
+//         res.status(200).json({status: "Success"})
+//     } catch (err) {
+//         res.status(400).json({error:err})
+//     }
+// }
+// module.exports.changeManager = async (req, res) => {
+//     try {
+//         res.status(200).json({status: "Success"})
+//     } catch (err) {
+//         res.status(400).json({error:err})
+//     }
+// }
+
+// module.exports.addFeatureToRole = async (req, res) => {
+//     try {
+//         const role = await Role.findOne({_id: req.query.roleId})
+//         if(!role.features.includes(req.body.featureId)) {
+//             Role.findOneAndUpdate({_id: req.query.roleId}, { $push: {"features":new mongoose.Types.ObjectId(req.body.featureId)}})
+//             .then( (result)  => { 
+//                 res.status(200).json({feature: result, status: "Success"}) 
+//             }).catch((error) => {
+//                 res.status(400).json({error:err})
+//             })
+//         }
+//         else {
+//             res.status(400).json({message: "The role already has the feature", status: "Failed"}) 
+//         }
+//     } catch (err) {
+//         res.status(400).json({error:err})
+//     }
+// }
+
+// module.exports.addAllFeaturesToRole = async (req, res) => {
+//     try {
+//         grantRoleAllFeature(req.query.roleId)
+//         res.status(200).json({message: "Grant all features.", status: "Success"}) 
+//     } catch (err) {
+//         res.status(400).json({error:err})
+//     }
+// }
+
+// module.exports.removeFeatureFromRole = async (req, res) => {
+//     try {
+//         let role = await Role.findOne({_id: req.query.roleId})
+//         role.features=role.features.filter(e => e.toString()!==req.body.featureId)
+//         console.log(role)
+//         Role.findOneAndUpdate({_id: req.query.roleId}, {features: role.features} ).then( (result)  => { 
+//             res.status(200).json({feature: result, status: "Success"}) 
+//         }).catch((error) => {
+//             res.status(400).json({error:err})
+//         })
+//     } catch (err) {
+//         res.status(400).json({error:err})
+//     }
+// }
+
+// module.exports.deleteFeature = async (req, res) => {
+//     try {
+//         Feature.findOneAndDelete({_id: req.body.id}, (error,result) => {
+//             if(error) {
+//                 res.status(400).json({error:err})
+//             }
+//             else {
+//                 res.status(200).json({result: result, status: "Success"})
+//             }  
+//         })
+//     } catch (err) {
+//         res.status(400).json({error:err})
+//     }
+// }
+// module.exports.deleteRole = async (req, res) => {
+//     try {
+//         let role = await Role.findOne({_id: req.body.id})
+//         if(role.roleTitle=="System Owner") {
+//             res.status(400).json({message: "System Owner role cannot be deleted.", status: "Success"})
+//         }
+//         else {
+//             Role.findOneAndDelete({_id: req.body.id}, (error,result) => {
+//                 if(error) {
+//                     res.status(400).json({error:err})
+//                 }
+//                 else {
+//                     res.status(200).json({result: result, status: "Success"})
+//                 }  
+//             })
+//         }
+//     } catch (err) {
+//         res.status(400).json({error:err})
+//     }
+// }
 module.exports.deleteStore = async (req, res) => {
     try {
         if(req.manager.roleTitle=="System Owner") {
@@ -314,10 +362,17 @@ module.exports.deleteManager = async (req, res) => {
 module.exports.editStore = async (req, res) => {
     if(req.manager.role.roleTitle=="System Owner")
     try {
-        let store = new Store.findByIdAndUpdate(req.query.id,req.body)
-        store.save().then(() => {
-            res.status(200).json({store: store,status: "Success"})
-        })
+        if(req.file) {
+            while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
+            req.body.avatar = `/${req.file.path}`
+        } 
+        console.log(req.body)
+        let result = await Store.findOneAndUpdate({_id: req.query.id},req.body)
+        // .then((result) => {  
+        //     res.status(200).json({result: result,status: "Success"})
+        // })
+        console.log(result)
+        res.status(200).json({result: result,status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }
