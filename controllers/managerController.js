@@ -163,6 +163,10 @@ module.exports.createStore = async (req, res) => {
     try {
         req.body._id = new mongoose.Types.ObjectId()
         req.body.password = shortid.generate()
+        if(req.file) {
+            // while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
+            req.body.avatar = `/${req.file.path}`
+        } 
         let newStore = new Store(req.body)
         newStore.save().then(() => {
             const msg = {
@@ -190,7 +194,7 @@ module.exports.createStoreType = async (req, res) => {
     try {
         req.body._id = new mongoose.Types.ObjectId()
         if(req.file) {
-            while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
+            // while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
             req.body.thumbnail = `/${req.file.path}`
         } 
         let newType = new StoreType(req.body)
@@ -332,10 +336,9 @@ module.exports.editStore = async (req, res) => {
     if(req.manager.role.roleTitle=="System Owner")
     try {
         if(req.file) {
-            while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
+            //while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
             req.body.avatar = `/${req.file.path}`
         } 
-        console.log(req.body)
         let result = await Store.findOneAndUpdate({_id: req.query.id},req.body)
         // .then((result) => {  
         //     res.status(200).json({result: result,status: "Success"})
