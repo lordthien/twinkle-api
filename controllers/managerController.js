@@ -172,38 +172,7 @@ module.exports.createStore = async (req, res) => {
                 html: `<strong>${newStore.password}</strong>`
             }
             sgMail.send(msg).then(() => {
-                res.status(200).json({status: "Success"})
-            }, error => {
-                console.error(error);
-                if (error.response) {
-                console.error(error.response.body)
-                }
-            });
-        })
-    } catch (err) {
-        res.status(400).json({error:err})
-    }
-}
-
-module.exports.createStore = async (req, res) => {
-    if(req.manager.role.roleTitle=="System Owner")
-    try {
-        req.body._id = new mongoose.Types.ObjectId()
-        req.body.password = shortid.generate()
-        if(req.file) {
-            while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
-            req.body.avatar = `/${req.file.path}`
-        } 
-        let newStore = new Store(req.body)
-        newStore.save().then(() => {
-            const msg = {
-                to: newStore.email,
-                from: 'noreply@twinkleapp.tk',
-                subject: 'Successful Creating Store on Twinkle',
-                html: `<strong>${newStore.password}</strong>`
-            }
-            sgMail.send(msg).then(() => {
-                res.status(200).json({status: "Success"})
+                res.status(200).json({store: newStore,status: "Success"})
             }, error => {
                 console.error(error);
                 if (error.response) {
