@@ -19,6 +19,7 @@ const storeSchema = new Schema({
   phoneNumber: { type: String, default: '' },
   openTime: { type: String, default: '' },
   description: { type: String, default: '' },
+  createdDate: {type: Date, default: Date.now()},
   photos: [{ type: mongoose.Types.ObjectId, ref: Photo}],
   //Type of Store
   storeType: { type: mongoose.Types.ObjectId, ref: StoreType },

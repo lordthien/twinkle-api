@@ -8,6 +8,7 @@ const discountSchema = new Schema({
   code: String,
   description: String,
   expiration: Date,
+  createdDate: {type: Date, default: Date.now()},
   appliedStore: [{type: mongoose.Types.ObjectId, ref: Store}]
 })
 

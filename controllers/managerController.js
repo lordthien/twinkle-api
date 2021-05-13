@@ -340,6 +340,22 @@ module.exports.editStore = async (req, res) => {
             req.body.avatar = `/${req.file.path}`
         } 
         let result = await Store.findOneAndUpdate({_id: req.query.id},req.body)
+        .then((result) => {  
+            res.status(200).json({result: result,status: "Success"})
+        }).catch(err =>  res.status(202).json({error:err, MESSAGE: "Fail to edit"}))
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.editStoreType = async (req, res) => {
+    if(req.manager.role.roleTitle=="System Owner")
+    try {
+        if(req.file) {
+            //while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
+            req.body.thumbnail = `/${req.file.path}`
+        } 
+        let result = await StoreType.findOneAndUpdate({_id: req.query.id},req.body)
         // .then((result) => {  
         //     res.status(200).json({result: result,status: "Success"})
         // })

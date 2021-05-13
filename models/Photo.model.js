@@ -7,6 +7,7 @@ const photoSchema = new Schema({
   url: String,
   storeId: String,
   reviewId: String,
+  createdDate: {type: Date, default: Date.now()},
 })
 
 const Photo = mongoose.model('Photo', photoSchema, 'photos')

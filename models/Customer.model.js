@@ -8,6 +8,7 @@ const customerSchema = new Schema({
   displayName: String,
   password: String,
   email: String,
+  createdDate: {type: Date, default: Date.now()},
   tokens: [{type: String}],
 })
 

@@ -11,6 +11,7 @@ const reviewSchema = new Schema({
   ratingPoint: Number,
   customerId: String,
   storeId: String,
+  createdDate: {type: Date, default: Date.now()},
   photos: [{type: mongoose.Types.ObjectId, ref: Photo}],
 })
 

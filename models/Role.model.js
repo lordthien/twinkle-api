@@ -7,6 +7,7 @@ const roleSchema = new Schema({
   _id: mongoose.Types.ObjectId,
   roleTitle: String,
   roleDescription: String,
+  createdDate: {type: Date, default: Date.now()},
   features: [{type: mongoose.Types.ObjectId, ref: Feature}]
 })
 

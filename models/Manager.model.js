@@ -10,6 +10,7 @@ const managerSchema = new Schema({
   name: { type: String },
   password: { type: String },
   role: { type: mongoose.Types.ObjectId, ref: Role },
+  createdDate: {type: Date, default: Date.now()},
   tokens: [{token: String}]
 })
 

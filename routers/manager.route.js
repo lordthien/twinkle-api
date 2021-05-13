@@ -38,10 +38,10 @@ controller.logoutAll)
 
 router.get('/me', managerAuth, 
 controller.getMyInformation)
-router.get('/allFeatures', //managerAuth, 
-controller.getAllFeatures)
-router.get('/allRoles', //managerAuth, 
-controller.getAllRoles)
+// router.get('/allFeatures', //managerAuth, 
+// controller.getAllFeatures)
+// router.get('/allRoles', //managerAuth, 
+// controller.getAllRoles)
 router.get('/allManagers', //managerAuth, 
 controller.getAllManagers)
 router.get('/allStores', //managerAuth, 
@@ -63,8 +63,6 @@ controller.createStore)
 router.post('/createStoreType', managerAuth, upload.single("thumbnail"),
 controller.createStoreType)
 
-
-
 // router.put('/updateFeature', //managerAuth,
 // controller.changeFeature)
 // router.put('/updateRole', //managerAuth, 
@@ -78,15 +76,17 @@ controller.createStoreType)
 // controller.addAllFeaturesToRole)
 // router.patch('/removeFeature', //managerAuth,
 // controller.removeFeatureFromRole)
-router.patch('/editStore', managerAuth, managerAuth, upload.single("avatar"),
+router.patch('/editStore', managerAuth, upload.single("avatar"),
 controller.editStore)
+router.post('/editStoreType', managerAuth, upload.single("thumbnail"),
+controller.editStoreType)
 
 // router.delete('/deleteFeature', //managerAuth,
 // controller.deleteFeature)
 // router.delete('/deleteRole', //managerAuth,
 // controller.deleteRole)
-router.delete('/deleteManager', //managerAuth,
-controller.deleteManager)
+// router.delete('/deleteManager', //managerAuth,
+// controller.deleteManager)
 router.delete('/deleteStore', managerAuth,
 controller.deleteStore)
 
