@@ -1,5 +1,6 @@
 const md5 = require('md5')
 const bcrypt = require('bcrypt')
+const slug = require('vietnamese-slug')
 const Manager = require('../models/Manager.model')
 const Feature = require('../models/Feature.model')
 const Role = require('../models/Role.model')
@@ -8,6 +9,7 @@ const mongoose = require('mongoose')
 const shortid = require('shortid')
 const sgMail = require('@sendgrid/mail')
 const StoreType = require('../models/StoreType.model')
+const Blog = require('../models/Blog.model')
 
 require('dotenv').config()
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -113,6 +115,24 @@ module.exports.getAllStoreTypes  = async (req, res) => {
     }
 }
 
+module.exports.getAllBlogs  = async (req, res) => {
+    try {
+        const blogs = await Blog.find()
+        res.status(200).json({blogs: blogs,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.getBlogById = async (req, res) => {
+    try {
+        const blog = await Blog.findById(req.query.id)
+        res.status(200).json({blog: blog,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
 //Create features, roles, manager for manager
 module.exports.createFeature  = async (req, res) => {
     try {
@@ -205,6 +225,26 @@ module.exports.createStoreType = async (req, res) => {
         res.status(400).json({error:err})
     }
 }
+
+module.exports.createBlog = async (req, res) => {
+    if(req.manager.role.roleTitle=="System Owner")
+    try {
+        req.body._id = new mongoose.Types.ObjectId()
+        req.body.slug = slug(req.body.title)
+        if(req.file) {
+            // while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
+            req.body.thumbnail = `/${req.file.path}`
+        } 
+        let newType = new Blog(req.body)
+        newType.save().then(() => {
+            res.status(200).json({data: newType, status: "Success"})
+        })
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+
 
 // module.exports.changeRole  = async (req, res) => {
 //     try {
@@ -324,6 +364,44 @@ module.exports.deleteStore = async (req, res) => {
         res.status(400).json({error:err})
     }
 }
+module.exports.deleteStoreType = async (req, res) => {
+    try {
+        if(req.manager.roleTitle=="System Owner") {
+            res.status(400).json({message: "System Owner role cannot be deleted.", status: "Success"})
+        }
+        else {
+            StoreType.findOneAndDelete({_id: req.body.id}, (error,result) => {
+                if(error) {
+                    res.status(400).json({error: error})
+                }
+                else {
+                    res.status(200).json({result: result, status: "Success"})
+                }  
+            })
+        }
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+module.exports.deleteBlog = async (req, res) => {
+    try {
+        if(req.manager.roleTitle=="System Owner") {
+            res.status(400).json({message: "System Owner role cannot be deleted.", status: "Success"})
+        }
+        else {
+            Blog.findOneAndDelete({_id: req.body.id}, (error,result) => {
+                if(error) {
+                    res.status(400).json({error: error})
+                }
+                else {
+                    res.status(200).json({result: result, status: "Success"})
+                }  
+            })
+        }
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
 module.exports.deleteManager = async (req, res) => {
     try {
         res.status(200).json({status: "Success"})
@@ -359,6 +437,21 @@ module.exports.editStoreType = async (req, res) => {
         // .then((result) => {  
         //     res.status(200).json({result: result,status: "Success"})
         // })
+        console.log(result)
+        res.status(200).json({result: result,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.editBlog = async (req, res) => {
+    if(req.manager.role.roleTitle=="System Owner")
+    try {
+        if(req.file) {
+            req.body.thumbnail = `/${req.file.path}`
+        } 
+        req.body.modifiedAt = new Date()
+        let result = await Blog.findOneAndUpdate({_id: req.query.id},req.body)
         console.log(result)
         res.status(200).json({result: result,status: "Success"})
     } catch (err) {
