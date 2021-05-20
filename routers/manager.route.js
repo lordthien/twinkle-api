@@ -97,9 +97,9 @@ controller.editBlog)
 // controller.deleteManager)
 router.delete('/deleteStore', managerAuth,
 controller.deleteStore)
-router.post('/deleteStoreType', managerAuth, 
+router.delete('/deleteStoreType', managerAuth, 
 controller.deleteStoreType)
-router.post('/deleteBlog', managerAuth, 
+router.delete('/deleteBlog', managerAuth, 
 controller.deleteBlog)
 
 module.exports = router
