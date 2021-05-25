@@ -2,7 +2,7 @@ const md5 = require('md5')
 const bcrypt = require('bcrypt')
 const slug = require('vietnamese-slug')
 const Manager = require('../models/Manager.model')
-const Feature = require('../models/Feature.model')
+const Feature = require('../models/Discount.model')
 const Role = require('../models/Role.model')
 const Store = require('../models/Store.model')
 const mongoose = require('mongoose')
@@ -10,6 +10,7 @@ const shortid = require('shortid')
 const sgMail = require('@sendgrid/mail')
 const StoreType = require('../models/StoreType.model')
 const Blog = require('../models/Blog.model')
+const Discount = require('../models/Discount.model')
 
 require('dotenv').config()
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -106,6 +107,14 @@ module.exports.getAllStores  = async (req, res) => {
         res.status(400).json({error:err})
     }
 }
+module.exports.getStoreById  = async (req, res) => {
+    try {
+        const store = await Store.findById(req.query.id).populate('storeType').populate('reviews').populate('photos')
+        res.status(200).json({store: store,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
 module.exports.getAllStoreTypes  = async (req, res) => {
     try {
         const storeTypes = await StoreType.find()
@@ -114,7 +123,6 @@ module.exports.getAllStoreTypes  = async (req, res) => {
         res.status(400).json({error:err})
     }
 }
-
 module.exports.getAllBlogs  = async (req, res) => {
     try {
         const blogs = await Blog.find()
@@ -123,7 +131,6 @@ module.exports.getAllBlogs  = async (req, res) => {
         res.status(400).json({error:err})
     }
 }
-
 module.exports.getBlogById = async (req, res) => {
     try {
         const blog = await Blog.findById(req.query.id)
@@ -132,7 +139,22 @@ module.exports.getBlogById = async (req, res) => {
         res.status(400).json({error:err})
     }
 }
-
+module.exports.getAllDiscounts  = async (req, res) => {
+    try {
+        const discounts = await Discount.find().populate("appliedStore")
+        res.status(200).json({discounts: discounts,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+module.exports.getDiscountById = async (req, res) => {
+    try {
+        const discount = await Discount.findOne({_id: req.query.id}).populate("appliedStore")
+        res.status(200).json({discount: discount,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
 //Create features, roles, manager for manager
 module.exports.createFeature  = async (req, res) => {
     try {
@@ -170,9 +192,14 @@ module.exports.createManager  = async (req, res) => {
         res.status(400).json({error:err})
     }
 }
-module.exports.createCoupon = async (req, res) => {
+module.exports.createDiscount = async (req, res) => {
+    if(req.manager.role.roleTitle=="System Owner")
     try {
-        res.status(200).json({status: "Success"})
+        req.body._id = new mongoose.Types.ObjectId()
+        let newDiscount = new Discount(req.body)
+        newDiscount.save().then(() => {
+            res.status(200).json({store: newDiscount,status: "Success"})
+        })
     } catch (err) {
         res.status(400).json({error:err})
     }
@@ -402,6 +429,25 @@ module.exports.deleteBlog = async (req, res) => {
         res.status(400).json({error:err})
     }
 }
+module.exports.deleteDiscount = async (req, res) => {
+    try {
+        if(req.manager.roleTitle=="System Owner") {
+            res.status(400).json({message: "System Owner role cannot be deleted.", status: "Success"})
+        }
+        else {
+            Discount.findOneAndDelete({_id: req.body.id}, (error,result) => {
+                if(error) {
+                    res.status(400).json({error: error})
+                }
+                else {
+                    res.status(200).json({result: result, status: "Success"})
+                }  
+            })
+        }
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
 module.exports.deleteManager = async (req, res) => {
     try {
         res.status(200).json({status: "Success"})
@@ -454,6 +500,32 @@ module.exports.editBlog = async (req, res) => {
         let result = await Blog.findOneAndUpdate({_id: req.query.id},req.body)
         console.log(result)
         res.status(200).json({result: result,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.editDiscount = async (req, res) => {
+    if(req.manager.role.roleTitle=="System Owner")
+    try {
+        let result = await Discount.findOneAndUpdate({_id: req.query.id},req.body)
+        result.save().then(() => {
+            res.status(200).json({result: result,status: "Success"})
+        })
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.addStoreToDiscount = async (req, res) => {
+    if(req.manager.role.roleTitle=="System Owner")
+    try {
+        let result = await Discount.findOne({_id: req.query.id})
+        if(result.appliedStore.filter((e) => e!==result.appliedStore).length<1)
+            result.appliedStore.push(req.body.addedStore)
+        result.save().then(() => {
+            res.status(200).json({result: result,status: "Success"})
+        })
     } catch (err) {
         res.status(400).json({error:err})
     }

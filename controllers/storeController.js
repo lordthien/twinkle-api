@@ -1,6 +1,12 @@
 const Store = require('../models/Store.model')
 const mongoose = require('mongoose')
+const Service = require('../models/Service.model')
+const Staff = require('../models/Staff.model')
+const shortid = require('shortid')
+const sgMail = require('@sendgrid/mail')
 
+require('dotenv').config()
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 module.exports.login = async (req, res) => {
     try {
@@ -41,6 +47,14 @@ module.exports.logoutAll = async (req, res) => {
     }
 }
 
+module.exports.storeInformation = async (req, res) => {
+    try {
+        res.status(200).json({store: req.store,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
 module.exports.getAllStaffs = async (req, res) => {
     try {
         res.status(200).json({stores: stores,status: "Success"})
@@ -51,7 +65,8 @@ module.exports.getAllStaffs = async (req, res) => {
 
 module.exports.getAllServices = async (req, res) => {
     try {
-        res.status(200).json({stores: stores,status: "Success"})
+        let services = await Service.find()
+        res.status(200).json({services: services,status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }
@@ -65,8 +80,33 @@ module.exports.getAllBooks = async (req, res) => {
     }
 }
 
+module.exports.getStaffById = async (req, res) => {
+    try {
+        res.status(200).json({stores: stores,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.getServiceById = async (req, res) => {
+    try {
+        res.status(200).json({stores: stores,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.getBookById = async (req, res) => {
+    try {
+        res.status(200).json({stores: stores,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
 module.exports.createService = async (req, res) => {
     try {
+        
         res.status(200).json({stores: stores,status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
@@ -81,7 +121,10 @@ module.exports.createStaff = async (req, res) => {
             // while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
             req.body.avatar = `/${req.file.path}`
         } 
-        let newStaff = new Store(req.body)
+        req.body.storeId = req.store._id
+        // if(req.body.startWorkingDate!=="")
+        //     req.body.startWorkingDate = new Date(req.body.startWorkingDate)
+        let newStaff = new Staff(req.body)
         newStaff.save().then(() => {
             const msg = {
                 to: newStaff.email,
@@ -90,7 +133,7 @@ module.exports.createStaff = async (req, res) => {
                 html: `<strong>${newStaff.password}</strong>`
             }
             sgMail.send(msg).then(() => {
-                res.status(200).json({store: newStaff,status: "Success"})
+                res.status(200).json({staff: newStaff,status: "Success"})
             }, error => {
                 console.error(error);
                 if (error.response) {
@@ -99,6 +142,7 @@ module.exports.createStaff = async (req, res) => {
             });
         })
     } catch (err) {
+        console.log(err)
         res.status(400).json({error:err})
     }
 }

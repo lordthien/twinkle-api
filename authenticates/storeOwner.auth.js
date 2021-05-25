@@ -10,7 +10,7 @@ module.exports = async (req, res, next) => {
         // .populate({path: 'role', populate: {
         //     path: 'features'
         // }})
-        if (!manager) {
+        if (!store) {
             next()
         }
         req.token = token

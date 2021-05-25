@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const Feature = require('./Feature.model')
+const Feature = require('./Discount.model')
 
 const roleSchema = new Schema({
   _id: mongoose.Types.ObjectId,

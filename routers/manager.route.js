@@ -46,12 +46,18 @@ router.get('/allManagers', //managerAuth,
 controller.getAllManagers)
 router.get('/allStores', //managerAuth, 
 controller.getAllStores)
+router.get('/storeById', //managerAuth, 
+controller.getStoreById)
 router.get('/allStoreTypes', //managerAuth, 
 controller.getAllStoreTypes)
 router.get('/allBlogs', //managerAuth, 
 controller.getAllBlogs)
 router.get('/blogById', //managerAuth, 
 controller.getBlogById)
+router.get('/allDiscounts',
+controller.getAllDiscounts)
+router.get('/discountById',
+controller.getDiscountById)
 
 //Create features, roles, manager for manager
 router.post('/createFeature', //managerAuth, 
@@ -60,14 +66,13 @@ router.post('/createRole', //managerAuth,
 controller.createRole)
 router.post('/createManager', //managerAuth, 
 controller.createManager)
-router.post('/createCoupon', //managerAuth, 
-controller.createCoupon)
 router.post('/createStore', managerAuth, upload.single("avatar"),
 controller.createStore)
 router.post('/createStoreType', managerAuth, upload.single("thumbnail"),
 controller.createStoreType)
 router.post('/createBlog', managerAuth, upload.single("thumbnail"),
 controller.createBlog)
+router.post('/createDiscount', managerAuth, controller.createDiscount)
 
 // router.put('/updateFeature', //managerAuth,
 // controller.changeFeature)
@@ -88,6 +93,10 @@ router.patch('/editStoreType', managerAuth, upload.single("thumbnail"),
 controller.editStoreType)
 router.patch('/editBlog', managerAuth, upload.single("thumbnail"),
 controller.editBlog)
+router.patch('/editDiscount', managerAuth,
+controller.editDiscount)
+router.patch('/addStoreToDiscount', managerAuth,
+controller.addStoreToDiscount)
 
 // router.delete('/deleteFeature', //managerAuth,
 // controller.deleteFeature)
@@ -101,5 +110,7 @@ router.delete('/deleteStoreType', managerAuth,
 controller.deleteStoreType)
 router.delete('/deleteBlog', managerAuth, 
 controller.deleteBlog)
+router.delete('/deleteDiscount', managerAuth, 
+controller.deleteDiscount)
 
 module.exports = router

@@ -30,10 +30,13 @@ router.post('/login', controller.login )
 router.post('/logout', storeAuth, controller.logout )
 router.post('/logoutAll', storeAuth, controller.logoutAll )
 
+router.get('/me', storeAuth, controller.storeInformation )
 router.get('/allStaffs', storeAuth, controller.getAllStaffs )
 router.get('/allServices', storeAuth, controller.getAllServices )
 router.get('/allBooks', storeAuth, controller.getAllBooks )
-
+router.get('/staffById', storeAuth, controller.getStaffById )
+router.get('/serviceById', storeAuth, controller.getServiceById )
+router.get('/bookById', storeAuth, controller.getBookById )
 
 router.post('/createService', storeAuth, controller.createService )
 router.post('/createStaff', storeAuth, controller.createStaff )
