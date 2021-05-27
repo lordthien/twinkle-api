@@ -57,7 +57,7 @@ module.exports.storeInformation = async (req, res) => {
 
 module.exports.getAllStaffs = async (req, res) => {
     try {
-        let staffs = await Staff.find()
+        let staffs = await Staff.find().populate("services")
         res.status(200).json({ staffs: staffs, status: "Success" })
     } catch (err) {
         res.status(400).json({ error: err })
@@ -83,7 +83,7 @@ module.exports.getAllBooks = async (req, res) => {
 
 module.exports.getStaffById = async (req, res) => {
     try {
-        let staff = await Staff.findOne({ _id: req.query.id })
+        let staff = await Staff.findOne({ _id: req.query.id }).populate("services")
         res.status(200).json({ staff: staff, status: "Success" })
     } catch (err) {
         res.status(400).json({ error: err })
@@ -206,6 +206,44 @@ module.exports.editStaff = async (req, res) => {
             req.body.startWorkingDate = new Date(req.body.startWorkingDate)
         else req.body.startWorkingDate = new Date()
         let result = await Staff.findOneAndUpdate({_id: req.query.id },req.body)
+        result.save().then(() => {
+            res.status(200).json({ result: result, status: "Success" })
+        }, error => {
+            console.error(error);
+            if (error.response) {
+                console.error(error.response.body)
+            }
+        });
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({ error: err })
+    }
+}
+
+module.exports.addService = async (req, res) => {
+    try {
+        let result = await Staff.findOne({_id: req.query.id })
+        if(result.services.filter((e) => e==req.body.serviceId).length<1)
+            result.services.push(req.body.serviceId)
+        result.save().then(() => {
+            res.status(200).json({ result: result, status: "Success" })
+        }, error => {
+            console.error(error);
+            if (error.response) {
+                console.error(error.response.body)
+            }
+        });
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({ error: err })
+    }
+}
+module.exports.removeService = async (req, res) => {
+    try {
+        let result = await Staff.findOne({_id: req.query.id })
+        result.services=result.services.filter((e) => {
+            if(e.toString()!==req.body.serviceId) return e
+        })
         result.save().then(() => {
             res.status(200).json({ result: result, status: "Success" })
         }, error => {

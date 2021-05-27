@@ -43,6 +43,8 @@ router.post('/createStaff', storeAuth, upload.single("avatar"), controller.creat
 router.patch('/editStoreInformation', storeAuth, upload.single("avatar"), controller.editStoreInformation)
 router.patch('/editService', storeAuth, upload.single("avatar"), controller.editService)
 router.patch('/editStaff', storeAuth, upload.single("avatar"), controller.editStaff)
+router.patch('/addServiceToStaff', storeAuth, controller.addService)
+router.patch('/removeServiceFromStaff', storeAuth, controller.removeService)
 
 router.delete('/deleteService', storeAuth, controller.deleteService)
 router.delete('/deleteStaff', storeAuth, controller.deleteStaff)

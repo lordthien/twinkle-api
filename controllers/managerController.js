@@ -521,7 +521,7 @@ module.exports.addStoreToDiscount = async (req, res) => {
     if(req.manager.role.roleTitle=="System Owner")
     try {
         let result = await Discount.findOne({_id: req.query.id})
-        if(result.appliedStore.filter((e) => e!==result.appliedStore).length<1)
+        if(result.appliedStore.filter((e) => e==req.body.addedStore).length<1)
             result.appliedStore.push(req.body.addedStore)
         result.save().then(() => {
             res.status(200).json({result: result,status: "Success"})
