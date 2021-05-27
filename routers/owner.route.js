@@ -41,7 +41,7 @@ router.post('/createService', storeAuth, upload.single("thumbnail"), controller.
 router.post('/createStaff', storeAuth, upload.single("avatar"), controller.createStaff )
 
 router.patch('/editStoreInformation', storeAuth, upload.single("avatar"), controller.editStoreInformation)
-router.patch('/editService', storeAuth, upload.single("avatar"), controller.editService)
+router.patch('/editService', storeAuth, upload.single("thumbnail"), controller.editService)
 router.patch('/editStaff', storeAuth, upload.single("avatar"), controller.editStaff)
 router.patch('/addServiceToStaff', storeAuth, controller.addService)
 router.patch('/removeServiceFromStaff', storeAuth, controller.removeService)
