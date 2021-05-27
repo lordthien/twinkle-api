@@ -8,7 +8,7 @@ const staffSchema = new Schema({
   username: { type: String, unique: true },
   email: { type: String },
   password: { type: String, trim: true },
-  avatar: { type: String, default: '/staffs/default.png' },
+  avatar: { type: String, default: '/owner/default.png' },
   address: { type: String, default: '' },
   storeId: String,
   salary: Number,

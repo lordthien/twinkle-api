@@ -1,15 +1,11 @@
 const express = require('express')
-const router = express.Router()
-const controller = require('../controllers/storeController')
 const multer = require('multer')
-const storeAuth = require('../authenticates/storeOwner.auth')
-
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, './public/owner/')
+        cb(null, './public/stores/')
     },
     filename: (req, file, cb) => {
-        cb(null, new Date().toISOString() + file.originalname)
+        cb(null, new Date().getTime() + file.originalname)
     }
 })
 const upload = multer({
@@ -21,10 +17,13 @@ const upload = multer({
         if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
             return cb(new Error('Please upload an image'))
         }
-
         cb(undefined, true)
     }
 })
+const router = express.Router()
+const controller = require('../controllers/storeController')
+const storeAuth = require('../authenticates/storeOwner.auth')
+
 
 router.post('/login', controller.login )
 router.post('/logout', storeAuth, controller.logout )
@@ -38,11 +37,14 @@ router.get('/staffById', storeAuth, controller.getStaffById )
 router.get('/serviceById', storeAuth, controller.getServiceById )
 router.get('/bookById', storeAuth, controller.getBookById )
 
-router.post('/createService', storeAuth, controller.createService )
-router.post('/createStaff', storeAuth, controller.createStaff )
+router.post('/createService', storeAuth, upload.single("thumbnail"), controller.createService )
+router.post('/createStaff', storeAuth, upload.single("avatar"), controller.createStaff )
 
-router.put('/editStoreInformation', storeAuth, controller.editStoreInformation)
-router.put('/editService', storeAuth, controller.editService)
-router.put('/editStaff', storeAuth, controller.editStaff)
+router.patch('/editStoreInformation', storeAuth, upload.single("avatar"), controller.editStoreInformation)
+router.patch('/editService', storeAuth, upload.single("avatar"), controller.editService)
+router.patch('/editStaff', storeAuth, upload.single("avatar"), controller.editStaff)
+
+router.delete('/deleteService', storeAuth, controller.deleteService)
+router.delete('/deleteStaff', storeAuth, controller.deleteStaff)
 
 module.exports = router

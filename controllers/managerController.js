@@ -7,10 +7,10 @@ const Role = require('../models/Role.model')
 const Store = require('../models/Store.model')
 const mongoose = require('mongoose')
 const shortid = require('shortid')
-const sgMail = require('@sendgrid/mail')
 const StoreType = require('../models/StoreType.model')
 const Blog = require('../models/Blog.model')
 const Discount = require('../models/Discount.model')
+const sgMail = require('@sendgrid/mail')
 
 require('dotenv').config()
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
