@@ -18,6 +18,18 @@ const staffSchema = new Schema({
   notifications: []
 })
 
+staffSchema.methods.generateAuthToken = async function () {
+  try {
+    let staff = this
+    let token = jwt.sign({ data: staff.username },process.env.JWT_SECRET, { expiresIn: '30 days'})
+    staff.tokens = staff.tokens.concat({ token })
+    await staff.save()
+    return token
+  } catch (e) {
+    console.log(e)
+  }
+}
+
 const Staff = mongoose.model('Staff', staffSchema, 'staffs')
 
 module.exports = Staff

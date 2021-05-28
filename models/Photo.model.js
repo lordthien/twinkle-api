@@ -7,6 +7,7 @@ const photoSchema = new Schema({
   url: String,
   storeId: String,
   reviewId: String,
+  postId: String,
   createdDate: {type: Date, default: Date.now()},
 })
 
