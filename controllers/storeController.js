@@ -139,6 +139,9 @@ module.exports.createStaff = async (req, res) => {
             req.body.startWorkingDate = new Date(req.body.startWorkingDate)
         else req.body.startWorkingDate = new Date()
         let newStaff = new Staff(req.body)
+        let store = await Store.findOne({_id: req.store._id})
+        store.staffs.push(newStaff._id)
+        store.save()
         newStaff.save().then(() => {
             const msg = {
                 to: newStaff.email,
@@ -276,6 +279,11 @@ module.exports.deleteService = async (req, res) => {
 
 module.exports.deleteStaff = async (req, res) => {
     try {
+        let store = await Store.findOne({_id: req.store._id})
+        store.staffs=store.staffs.filter((e) => {
+            if(e.toString()!==req.body.id) return e
+        })
+        store.save()
         Staff.findOneAndDelete({ _id: req.body.id }, (error, result) => {
             if (error) {
                 res.status(400).json({ error: error })

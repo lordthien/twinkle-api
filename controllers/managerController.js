@@ -11,6 +11,7 @@ const StoreType = require('../models/StoreType.model')
 const Blog = require('../models/Blog.model')
 const Discount = require('../models/Discount.model')
 const sgMail = require('@sendgrid/mail')
+const Staff = require('../models/Staff.model')
 
 require('dotenv').config()
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
