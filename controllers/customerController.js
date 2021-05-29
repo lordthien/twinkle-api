@@ -32,7 +32,7 @@ module.exports.signUp = async (req, res) =>{
 
 module.exports.login = async (req, res) => {
     try {
-        let customer = await Customer.findOne({ username: req.body.username })
+        let customer = await Customer.findOne({ email: req.body.email })
         if (!customer) {
             res.status(400).json({ message: 'User does not exist.', status: "Failed"})
             return
