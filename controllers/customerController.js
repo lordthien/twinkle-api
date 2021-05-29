@@ -17,7 +17,7 @@ module.exports.signUp = async (req, res) =>{
                 html: `<strong>${newStore.name}</strong>`
             }
             sgMail.send(msg).then(() => {
-                res.status(200).json({store: newStore,status: "Success"})
+                res.status(200).json({customer: newCustomer,status: "Success"})
             }, error => {
                 console.error(error);
                 if (error.response) {
@@ -37,18 +37,6 @@ module.exports.login = async (req, res) => {
             res.status(400).json({ message: 'User does not exist.', status: "Failed"})
             return
         }
-        //let hashedPassword = md5(req.body.password) + req.body.username
-        // bcrypt.compare(hashedPassword, user.hash).then(async (result) => {
-        //     if (!result) {
-        //         res.status(500).send({
-        //             errors: ['Wrong password!']
-        //         })
-        //         return
-        //     }
-        //     else {
-                
-        //     }
-        // })
         if(req.body.password==customer.password) {
             const token = await customer.generateAuthToken()
             res.status(200).json({ customer, token, status: "Success" })
