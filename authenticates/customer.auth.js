@@ -7,9 +7,6 @@ module.exports = async (req, res, next) => {
         const token = req.header('Authorization').replace('Bearer ', '')
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         const customer = await Customer.findOne({ email: decoded.data, 'tokens.token': token })
-        // .populate({path: 'role', populate: {
-        //     path: 'features'
-        // }})
         if (!manager) {
             next()
         }
