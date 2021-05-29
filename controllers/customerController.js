@@ -72,7 +72,7 @@ module.exports.logoutAll = async (req, res) => {
 
 module.exports.getMyInformation = async (req, res) => {
     try {
-        let customer = await Customer.findOne({ email: req.customer.email })
+        let customer = await Customer.findOne({ _id: req.customer._id })
         res.status(200).json({ customer, token, status: "Success" })
     } catch (err) {
         res.status(400).json({error:err})
