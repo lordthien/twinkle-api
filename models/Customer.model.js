@@ -11,7 +11,7 @@ const customerSchema = new Schema({
   phoneNumber: { type: String, default: ''},
   avatar: { type: String, default: 'public/app/avatar.png' },
   createdDate: {type: Date, default: Date.now()},
-  tokens: [{type: String}],
+  tokens: [{token: String}],
   socialMediaToken: [{socialMedia: String, token: String}],
   books: [],
   notifications: []
@@ -21,7 +21,7 @@ customerSchema.methods.generateAuthToken = async function () {
   try {
     let user = this
     let token = jwt.sign({ data: user.email },process.env.JWT_SECRET, { expiresIn: '30 days'})
-    user.tokens.push({ token })
+    user.tokens = user.tokens.concat({ token })
     await user.save()
     return token
   } catch (e) {
