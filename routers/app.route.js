@@ -9,6 +9,7 @@ const customerController = require('../controllers/customerController')
 const appController = require('../controllers/appController')
 
 //Login, Logout
+router.post('/signup', customerController.signUp)
 router.post('/login', customerController.login)
 router.post('/logout', customerAuth, 
 customerController.logout)
@@ -18,8 +19,10 @@ customerController.logoutAll)
 router.get('/me', customerAuth, 
 customerController.getMyInformation)
 
-router.get('/allStores', //managerAuth, 
+router.get('/allStores',
 appController.getAllStores)
+router.get('/storeById',
+appController.getStoreById)
 
 router.post('/booking', customerAuth,
 appController.bookASchedule )

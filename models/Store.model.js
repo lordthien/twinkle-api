@@ -37,9 +37,6 @@ storeSchema.methods.toJSON = function () {
   const storeObject = store.toObject()
   // Replace cai \ thanh cai / ni
   storeObject.avatar = storeObject.avatar.replace('\\', '/').replace('\\', '/')
-  for (let i = 0; i < storeObject.photos.length; i++) {
-    storeObject.photos[i] = storeObject.photos[i].replace('\\', '/').replace('\\', '/')
-  }
   storeObject.address = storeObject.address.split("\n", 10) 
   storeObject.description = storeObject.description.split("\n", 20)
   var sum = 0

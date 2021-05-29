@@ -69,7 +69,7 @@ module.exports.getAllStaffs = async (req, res) => {
 
 module.exports.getAllServices = async (req, res) => {
     try {
-        let services = await Service.find()
+        let services = await Service.find().populate("services").populate("customer")
         res.status(200).json({ services: services, status: "Success" })
     } catch (err) {
         res.status(400).json({ error: err })
@@ -78,7 +78,8 @@ module.exports.getAllServices = async (req, res) => {
 
 module.exports.getAllBooks = async (req, res) => {
     try {
-        res.status(200).json({ stores: stores, status: "Success" })
+        let books = await Book.find()
+        res.status(200).json({ books: books, status: "Success" })
     } catch (err) {
         res.status(400).json({ error: err })
     }
@@ -104,7 +105,8 @@ module.exports.getServiceById = async (req, res) => {
 
 module.exports.getBookById = async (req, res) => {
     try {
-        res.status(200).json({ stores: stores, status: "Success" })
+        let book = await Book.findOne({ _id: req.query.id }).populate("services").populate("customer")
+        res.status(200).json({ book: book, status: "Success" })
     } catch (err) {
         res.status(400).json({ error: err })
     }
@@ -164,6 +166,28 @@ module.exports.createStaff = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(400).json({ error: err })
+    }
+}
+
+module.exports.changeCover = async (req, res) => {
+    try {
+        if (req.file) {
+            //while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
+            req.body.url = `/${req.file.path.replace(/\\/g, "/")}`
+        }
+        req.body._id = new mongoose.Types.ObjectId()
+        req.body.storeId = req.store._id
+        let newCover = new Photo(req.body)
+        newCover.save()
+        console.log(newCover)
+        let store = await Store.findOne({ _id: req.store._id })
+        store.photos.unshift(newCover._id) 
+        store.populated("photos")
+        store.save().then(() => {
+                res.status(200).json({ result: store, status: "Success" })
+        })
+    } catch (error) {
+        res.status(400).json({ error: error })
     }
 }
 
@@ -248,7 +272,7 @@ module.exports.removeService = async (req, res) => {
     try {
         let result = await Staff.findOne({_id: req.query.id })
         result.services=result.services.filter((e) => {
-            if(e.toString()!==req.body.serviceId) return e
+            if(e._id.toString()!==req.body.serviceId) return e
         })
         result.save().then(() => {
             res.status(200).json({ result: result, status: "Success" })

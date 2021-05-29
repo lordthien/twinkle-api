@@ -40,6 +40,7 @@ router.get('/bookById', storeAuth, controller.getBookById )
 router.post('/createService', storeAuth, upload.single("thumbnail"), controller.createService )
 router.post('/createStaff', storeAuth, upload.single("avatar"), controller.createStaff )
 
+router.patch('/changeCover', storeAuth, upload.single("url"), controller.changeCover)
 router.patch('/editStoreInformation', storeAuth, upload.single("avatar"), controller.editStoreInformation)
 router.patch('/editService', storeAuth, upload.single("thumbnail"), controller.editService)
 router.patch('/editStaff', storeAuth, upload.single("avatar"), controller.editStaff)

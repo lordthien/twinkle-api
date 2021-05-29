@@ -1,6 +1,34 @@
 const Customer = require('../models/Customer.model')
 const mongoose = require('mongoose')
+const sgMail = require('@sendgrid/mail')
 
+require('dotenv').config()
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+module.exports.signUp = async (req, res) =>{
+    try {
+        req.body._id = new mongoose.Types.ObjectId()
+        let newCustomer = new Customer(req.body)
+        newCustomer.save().then(() => {
+            const msg = {
+                to: newCustomer.email,
+                from: 'noreply@twinkleapp.tk',
+                subject: 'Welcome to Twinkle',
+                html: `<strong>${newStore.name}</strong>`
+            }
+            sgMail.send(msg).then(() => {
+                res.status(200).json({store: newStore,status: "Success"})
+            }, error => {
+                console.error(error);
+                if (error.response) {
+                console.error(error.response.body)
+                }
+            });
+        })
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
 
 module.exports.login = async (req, res) => {
     try {
