@@ -106,6 +106,8 @@ controller.addStoreToDiscount)
 // controller.deleteRole)
 // router.delete('/deleteManager', //managerAuth,
 // controller.deleteManager)
+router.delete('/deleteCustomer', managerAuth,
+controller.deleteCustomer)
 router.delete('/deleteStore', managerAuth,
 controller.deleteStore)
 router.delete('/deleteStoreType', managerAuth, 

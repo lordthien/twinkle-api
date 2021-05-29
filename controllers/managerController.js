@@ -382,6 +382,25 @@ module.exports.createBlog = async (req, res) => {
 //         res.status(400).json({error:err})
 //     }
 // }
+module.exports.deleteCustomer = async (req, res) => {
+    try {
+        if(req.manager.roleTitle=="System Owner") {
+            res.status(400).json({message: "System Owner role cannot be deleted.", status: "Success"})
+        }
+        else {
+            Customer.findOneAndDelete({_id: req.body.id}, (error,result) => {
+                if(error) {
+                    res.status(400).json({error: error})
+                }
+                else {
+                    res.status(200).json({result: result, status: "Success"})
+                }  
+            })
+        }
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
 module.exports.deleteStore = async (req, res) => {
     try {
         if(req.manager.roleTitle=="System Owner") {
