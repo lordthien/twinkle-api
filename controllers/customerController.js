@@ -14,7 +14,7 @@ module.exports.signUp = async (req, res) =>{
                 to: newCustomer.email,
                 from: 'noreply@twinkleapp.tk',
                 subject: 'Welcome to Twinkle',
-                html: `<strong>${newStore.name}</strong>`
+                html: `<strong>${newCustomer.name}</strong>`
             }
             sgMail.send(msg).then(() => {
                 res.status(200).json({customer: newCustomer,status: "Success"})
