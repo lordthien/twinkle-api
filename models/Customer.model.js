@@ -17,6 +17,18 @@ const customerSchema = new Schema({
   notifications: []
 })
 
+customerSchema.methods.generateAuthToken = async function () {
+  try {
+    let user = this
+    let token = jwt.sign({ data: user.email },process.env.JWT_SECRET, { expiresIn: '30 days'})
+    user.tokens = user.tokens.concat({ token })
+    await user.save()
+    return token
+  } catch (e) {
+    console.log(e)
+  }
+}
+
 const Customer = mongoose.model('Customer', customerSchema, 'customers')
 
 module.exports = Customer
