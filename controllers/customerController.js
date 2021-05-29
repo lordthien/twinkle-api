@@ -9,6 +9,7 @@ module.exports.signUp = async (req, res) =>{
     try {
         req.body._id = new mongoose.Types.ObjectId()
         let newCustomer = new Customer(req.body)
+        req.body.email = String(req.body.email).trim().lowercase()
         newCustomer.save().then(() => {
             const msg = {
                 to: newCustomer.email,
@@ -32,6 +33,7 @@ module.exports.signUp = async (req, res) =>{
 
 module.exports.login = async (req, res) => {
     try {
+        req.body.email = String(req.body.email).trim().lowercase()
         let customer = await Customer.findOne({ email: req.body.email })
         if (!customer) {
             res.status(400).json({ message: 'User does not exist.', status: "Failed"})
