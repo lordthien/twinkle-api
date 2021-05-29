@@ -12,6 +12,7 @@ const Blog = require('../models/Blog.model')
 const Discount = require('../models/Discount.model')
 const sgMail = require('@sendgrid/mail')
 const Staff = require('../models/Staff.model')
+const Customer = require('../models/Customer.model')
 
 require('dotenv').config()
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -120,6 +121,14 @@ module.exports.getAllStoreTypes  = async (req, res) => {
     try {
         const storeTypes = await StoreType.find()
         res.status(200).json({storeTypes: storeTypes,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+module.exports.getAllCustomers  = async (req, res) => {
+    try {
+        const customers = await Customer.find()
+        res.status(200).json({customers: customers,status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }
