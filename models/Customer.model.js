@@ -21,7 +21,7 @@ customerSchema.methods.generateAuthToken = async function () {
   try {
     let user = this
     let token = jwt.sign({ data: user.email },process.env.JWT_SECRET, { expiresIn: '30 days'})
-    user.tokens = user.tokens.concat({ token })
+    user.tokens.push({ token })
     await user.save()
     return token
   } catch (e) {
