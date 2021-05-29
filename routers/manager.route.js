@@ -58,6 +58,8 @@ router.get('/allDiscounts',
 controller.getAllDiscounts)
 router.get('/discountById',
 controller.getDiscountById)
+router.get('/allCustomers',
+controller.getAllCustomers)
 
 //Create features, roles, manager for manager
 router.post('/createFeature', //managerAuth, 
