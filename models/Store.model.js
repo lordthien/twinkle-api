@@ -37,7 +37,6 @@ storeSchema.methods.toJSON = function () {
   const storeObject = store.toObject()
   // Replace cai \ thanh cai / ni
   storeObject.avatar = storeObject.avatar.replace('\\', '/').replace('\\', '/')
-  storeObject.address = storeObject.address.split("\n", 10) 
   storeObject.description = storeObject.description.split("\n", 20)
   var sum = 0
   storeObject.reviews.forEach((review) => {
