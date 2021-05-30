@@ -7,6 +7,7 @@ const Post = require('../models/Post.model')
 const Book = require('../models/Book.model')
 const shortid = require('shortid')
 const sgMail = require('@sendgrid/mail')
+const ServiceType = require('../models/ServiceType.model')
 
 require('dotenv').config()
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -60,7 +61,7 @@ module.exports.storeInformation = async (req, res) => {
 
 module.exports.getAllStaffs = async (req, res) => {
     try {
-        let staffs = await Staff.find().populate("services")
+        let staffs = await Staff.find({storeId: req.store._id}).populate("services")
         res.status(200).json({ staffs: staffs, status: "Success" })
     } catch (err) {
         res.status(400).json({ error: err })
@@ -69,7 +70,17 @@ module.exports.getAllStaffs = async (req, res) => {
 
 module.exports.getAllServices = async (req, res) => {
     try {
-        let services = await Service.find().populate("services").populate("customer")
+        let services = await Service.find({storeId: req.store._id})
+        res.status(200).json({ services: services, status: "Success" })
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
+
+module.exports.getAllServicesType = async (req, res) => {
+    try {
+        let services = await ServiceType.find({storeId: req.store._id}).populate("services")
         res.status(200).json({ services: services, status: "Success" })
     } catch (err) {
         res.status(400).json({ error: err })
@@ -78,7 +89,7 @@ module.exports.getAllServices = async (req, res) => {
 
 module.exports.getAllBooks = async (req, res) => {
     try {
-        let books = await Book.find()
+        let books = await Book.find({storeId: req.store._id})
         res.status(200).json({ books: books, status: "Success" })
     } catch (err) {
         res.status(400).json({ error: err })
@@ -123,6 +134,28 @@ module.exports.createService = async (req, res) => {
         // if(req.body.startWorkingDate!=="")
         //     req.body.startWorkingDate = new Date(req.body.startWorkingDate)
         let newService = new Service(req.body)
+        if(newService.serviceTypeId) {
+            let type = await ServiceType.findOne({_id: newService.serviceTypeId})
+            type.services.push(newService._id)
+            type.save()
+        }
+        newService.save().then(() => {
+            res.status(200).json({ staff: newService, status: "Success" })
+        })
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
+module.exports.createServiceType = async (req, res) => {
+    try {
+        req.body._id = new mongoose.Types.ObjectId()
+        if (req.file) {
+            // while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
+            req.body.thumbnail = `/${req.file.path.replace(/\\/g, "/")}`
+        }
+        req.body.storeId = req.store._id
+        let newService = new ServiceType(req.body)
         newService.save().then(() => {
             res.status(200).json({ staff: newService, status: "Success" })
         })
@@ -213,6 +246,31 @@ module.exports.editService = async (req, res) => {
             req.body.thumbnail = `/${req.file.path.replace(/\\/g, "/")}`
         }
         let result = await Service.findOneAndUpdate({_id: req.query.id },req.body)
+        let type = await ServiceType.findOne({_id: result.serviceTypeId})
+        if(!type.services.includes(result._id)) {
+            type.services.push(result._id)
+            type.save()
+        }
+        result.save().then(() => {
+            res.status(200).json({ result: type, status: "Success" })
+        }, error => {
+            console.error(error);
+            if (error.response) {
+                console.error(error.response.body)
+            }
+        });
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
+module.exports.editServiceType = async (req, res) => {
+    try {
+        if (req.file) {
+            // while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
+            req.body.thumbnail = `/${req.file.path.replace(/\\/g, "/")}`
+        }
+        let result = await Service.findOneAndUpdate({_id: req.query.id },req.body)
         result.save().then(() => {
             res.status(200).json({ result: result, status: "Success" })
         }, error => {
@@ -291,6 +349,22 @@ module.exports.removeService = async (req, res) => {
 module.exports.deleteService = async (req, res) => {
     try {
         Service.findOneAndDelete({ _id: req.body.id }, (error, result) => {
+            if (error) {
+                res.status(400).json({ error: error })
+            }
+            else {
+                res.status(200).json({ result: result, status: "Success" })
+            }
+        })
+
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
+module.exports.deleteServiceType = async (req, res) => {
+    try {
+        ServiceType.findOneAndDelete({ _id: req.body.id }, (error, result) => {
             if (error) {
                 res.status(400).json({ error: error })
             }

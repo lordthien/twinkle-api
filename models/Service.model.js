@@ -9,6 +9,7 @@ const serviceSchema = new Schema({
   description: { type: String, default: '' },
   duration: Number,
   storeId: String,
+  serviceTypeId: String,
   price: Number
 })
 
