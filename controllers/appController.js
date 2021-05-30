@@ -2,6 +2,7 @@ const Store = require('../models/Store.model')
 const mongoose = require('mongoose')
 const slug = require('vietnamese-slug')
 const Staff = require('../models/Staff.model')
+const ServiceType = require('../models/ServiceType.model')
 
 module.exports.getAllStores  = async (req, res) => {
     try {
