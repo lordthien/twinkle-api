@@ -35,11 +35,19 @@ module.exports.getStoreById  = async (req, res) => {
     }
 }
 
-
 module.exports.getAllStaffsByStoreId  = async (req, res) => {
     try {
         const staffs = await Staff.find({storeId: req.query.id}).populate('services')
         res.status(200).json({staffs: staffs,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.getServicesByStoreId  = async (req, res) => {
+    try {
+        const types = await ServiceType.find({storeId: req.query.id}).populate('services')
+        res.status(200).json({types: types,status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }
