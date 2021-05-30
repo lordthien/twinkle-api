@@ -1,6 +1,7 @@
 const Store = require('../models/Store.model')
 const mongoose = require('mongoose')
 const slug = require('vietnamese-slug')
+const Staff = require('../models/Staff.model')
 
 module.exports.getAllStores  = async (req, res) => {
     try {
@@ -29,6 +30,16 @@ module.exports.getStoreById  = async (req, res) => {
     try {
         const store = await Store.findById(req.query.id).populate('storeType').populate('reviews').populate('photos').populate('staffs')
         res.status(200).json({store: store,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+
+module.exports.getAllStaffsByStoreId  = async (req, res) => {
+    try {
+        const staffs = await Staff.find({storeId: req.query.id}).populate('services')
+        res.status(200).json({staffs: staffs,status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }
