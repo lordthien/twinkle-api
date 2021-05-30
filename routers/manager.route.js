@@ -110,6 +110,8 @@ router.delete('/deleteCustomer', managerAuth,
 controller.deleteCustomer)
 router.delete('/deleteStore', managerAuth,
 controller.deleteStore)
+router.delete('/deleteStorePhotos', managerAuth,
+controller.deleteStorePhotos)
 router.delete('/deleteStoreType', managerAuth, 
 controller.deleteStoreType)
 router.delete('/deleteBlog', managerAuth, 

@@ -15,14 +15,17 @@ router.post('/logout', customerAuth,
 customerController.logout)
 router.post('/logoutAll', customerAuth, 
 customerController.logoutAll)
-
 router.get('/me', customerAuth, 
 customerController.getMyInformation)
+router.post('/editMe', customerAuth, 
+customerController.editMyInformation)
 
 router.get('/allStores',
 appController.getAllStores)
 router.get('/storeById',
 appController.getStoreById)
+router.get('/search',
+appController.search)
 
 router.post('/booking', customerAuth,
 appController.bookASchedule )

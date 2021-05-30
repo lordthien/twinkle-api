@@ -13,6 +13,7 @@ const Discount = require('../models/Discount.model')
 const sgMail = require('@sendgrid/mail')
 const Staff = require('../models/Staff.model')
 const Customer = require('../models/Customer.model')
+const Photo = require('../models/Photo.model')
 
 require('dotenv').config()
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -434,6 +435,24 @@ module.exports.deleteStoreType = async (req, res) => {
                     res.status(200).json({result: result, status: "Success"})
                 }  
             })
+        }
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+module.exports.deleteStorePhotos = async (req, res) => {
+    try {
+        if(req.manager.roleTitle=="System Owner") {
+            res.status(400).json({message: "System Owner role cannot be deleted.", status: "Success"})
+        }
+        else {
+            let store = await Store.findOne({_id: req.body.id}).populate("photos")
+            store.photos.forEach((e) => {
+                Photo.findOneAndDelete({_id: e._id})
+            })
+            store.photos=[]
+            store.save()
+            res.status(200).json({store: store, status: "Success"})
         }
     } catch (err) {
         res.status(400).json({error:err})
