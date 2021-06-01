@@ -270,7 +270,7 @@ module.exports.editServiceType = async (req, res) => {
             // while(req.file.path.indexOf("\\")>=0) req.file.path.replace("\\","/")
             req.body.thumbnail = `/${req.file.path.replace(/\\/g, "/")}`
         }
-        let result = await Service.findOneAndUpdate({_id: req.query.id },req.body)
+        let result = await ServiceType.findOneAndUpdate({_id: req.query.id },req.body)
         result.save().then(() => {
             res.status(200).json({ result: result, status: "Success" })
         }, error => {
@@ -326,6 +326,33 @@ module.exports.addService = async (req, res) => {
         res.status(400).json({ error: err })
     }
 }
+
+module.exports.addPhotos = async (req, res) => {
+    try {
+        let result = await Store.findOne({_id: req.store._id })
+        if (req.files) {
+            let newPhoto
+            for(let i=0; i<req.files.length; i++) {
+                newPhoto = new Photo({_id: new mongoose.Types.ObjectId(),url: `/${req.files[i].path}`, storeId: req.store._id})
+                newPhoto.save()
+                result.photos.push(newPhoto._id)
+            }
+        }
+        console.log(result.photos)
+        result.save().then(() => {
+            res.status(200).json({ result: result, status: "Success" })
+        }, error => {
+            console.error(error);
+            if (error.response) {
+                console.error(error.response.body)
+            }
+        });
+    } catch (err) {
+        console.log(err)
+        res.status(400).json({ error: err })
+    }
+}
+
 module.exports.removeService = async (req, res) => {
     try {
         let result = await Staff.findOne({_id: req.query.id })

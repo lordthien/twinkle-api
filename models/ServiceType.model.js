@@ -7,6 +7,7 @@ const serviceTypeSchema = new Schema({
   name: { type: String, default: '' },
   thumbnail: { type: String, default: '/services/default.png' },
   services: [{type: mongoose.Types.ObjectId, ref: Service}],
+  iconString: String,
   storeId: String
 })
 
