@@ -94,6 +94,16 @@ module.exports.getPaidBooks = async (req, res) => {
     }
 }
 
+module.exports.getBookById = async (req, res) => {
+    try {
+        let book = await Book.findOne({_id: req.query.id, customer: req.customer._id})
+        res.status(200).json({book: book, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+
 module.exports.getAllBooks = async (req, res) => {
     try {
         let books = await Book.find({customer: req.customer._id})

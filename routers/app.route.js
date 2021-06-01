@@ -39,6 +39,8 @@ router.get('/paidBooks', customerAuth,
 appController.getPaidBooks)
 router.get('/unpaidBooks', customerAuth, 
 appController.getUnpaidBooks)
+router.get('/bookById', customerAuth, 
+appController.getBookById)
 router.post('/booking', customerAuth,
 appController.bookASchedule )
 router.post('/payment', appController.payment)
