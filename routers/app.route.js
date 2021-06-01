@@ -39,10 +39,14 @@ router.get('/paidBooks', customerAuth,
 appController.getPaidBooks)
 router.get('/unpaidBooks', customerAuth, 
 appController.getUnpaidBooks)
+router.get('/cancelBooks', customerAuth, 
+appController.getCancelBooks)
 router.get('/bookById', customerAuth, 
 appController.getBookById)
 router.post('/booking', customerAuth,
 appController.bookASchedule )
+router.post('/cancel', customerAuth, 
+appController.cancelBookById)
 router.post('/payment', appController.payment)
 
 module.exports = router

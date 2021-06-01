@@ -78,7 +78,7 @@ module.exports.bookASchedule = async (req, res) => {
 
 module.exports.getUnpaidBooks = async (req, res) => {
     try {
-        let books = await Book.find({status: "BOOKED", customer: req.customer._id}).populate("services")
+        let books = await Book.find({status: "BOOKED", customer: req.customer._id}).populate("services").populate("staff").populate("store")
         res.status(200).json({book: books, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
@@ -87,7 +87,7 @@ module.exports.getUnpaidBooks = async (req, res) => {
 
 module.exports.getPaidBooks = async (req, res) => {
     try {
-        let books = await Book.find({status: "PAID", customer: req.customer._id}).populate("services")
+        let books = await Book.find({status: "PAID", customer: req.customer._id}).populate("services").populate("staff").populate("store")
         res.status(200).json({book: books, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
@@ -96,8 +96,18 @@ module.exports.getPaidBooks = async (req, res) => {
 
 module.exports.getBookById = async (req, res) => {
     try {
-        let book = await Book.findOne({_id: req.query.id, customer: req.customer._id}).populate("services")
+        let book = await Book.findOne({_id: req.query.id, customer: req.customer._id}).populate("services").populate("staff").populate("store")
         res.status(200).json({book: book, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+
+module.exports.getCancelBooks = async (req, res) => {
+    try {
+        let books = await Book.find({status: "CANCEL", customer: req.customer._id}).populate("services").populate("staff").populate("store")
+        res.status(200).json({book: books, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }
@@ -106,8 +116,19 @@ module.exports.getBookById = async (req, res) => {
 
 module.exports.getAllBooks = async (req, res) => {
     try {
-        let books = await Book.find({customer: req.customer._id}).populate("services")
+        let books = await Book.find({customer: req.customer._id}).populate("services").populate("staff").populate("store")
         res.status(200).json({book: books, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.cancelBookById = async (req, res) => {
+    try {
+        let book = await Book.findOne({_id: req.query.id, customer: req.customer._id})
+        book.status="CANCEL"
+        book.save()
+        res.status(200).json({book: book, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }
