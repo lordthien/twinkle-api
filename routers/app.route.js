@@ -33,6 +33,12 @@ appController.getServicesByStoreId)
 router.get('/search',
 appController.search)
 
+router.get('/allBooks', customerAuth, 
+appController.getAllBooks)
+router.get('/paidBooks', customerAuth, 
+appController.getPaidBooks)
+router.get('/unpaidBooks', customerAuth, 
+appController.getUnpaidBooks)
 router.post('/booking', customerAuth,
 appController.bookASchedule )
 router.post('/payment', appController.payment)
