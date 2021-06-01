@@ -12,7 +12,7 @@ const bookSchema = Schema({
     totalDuration: Number,
     cost: Number,
     note: String, 
-    discount: {type: mongoose.Types.ObjectId, ref: Discount},
+    discount: String,//{type: mongoose.Types.ObjectId, ref: Discount},
     staff: {type: mongoose.Types.ObjectId, ref: Staff},
     store: {type: mongoose.Types.ObjectId, ref: Store},
     customer: {type: mongoose.Types.ObjectId, ref: Customer},
