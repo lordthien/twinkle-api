@@ -24,6 +24,8 @@ router.get('/allStores',
 appController.getAllStores)
 router.get('/storeById',
 appController.getStoreById)
+router.get('/staffById',
+appController.staffById)
 router.get('/staffsByStoreId',
 appController.getAllStaffsByStoreId)
 router.get('/servicesByStoreId',

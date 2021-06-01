@@ -37,6 +37,7 @@ router.get('/allBooks', storeAuth, controller.getAllBooks )
 router.get('/staffById', storeAuth, controller.getStaffById )
 router.get('/serviceById', storeAuth, controller.getServiceById )
 router.get('/bookById', storeAuth, controller.getBookById )
+router.get('/fixPath', controller.fixPath)
 
 router.post('/createService', storeAuth, upload.single("thumbnail"), controller.createService )
 router.post('/createServiceType', storeAuth, upload.single("thumbnail"), controller.createServiceType )

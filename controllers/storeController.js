@@ -333,7 +333,7 @@ module.exports.addPhotos = async (req, res) => {
         if (req.files) {
             let newPhoto
             for(let i=0; i<req.files.length; i++) {
-                newPhoto = new Photo({_id: new mongoose.Types.ObjectId(),url: `/${req.files[i].path}`, storeId: req.store._id})
+                newPhoto = new Photo({_id: new mongoose.Types.ObjectId(),url: `/${req.files[i].path.replace(/\\/g, "/")}`, storeId: req.store._id})
                 newPhoto.save()
                 result.photos.push(newPhoto._id)
             }
@@ -422,6 +422,20 @@ module.exports.deleteStaff = async (req, res) => {
         })
 
     } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
+module.exports.fixPath = async (req,res) => {
+    try {
+        let result = await Photo.find()
+        result.forEach((e) => {
+            e.url = e.url.replace(/\\/g, "/")
+            e.save()
+        })
+        res.json({ result })
+    } catch (err) {
+        throw err
         res.status(400).json({ error: err })
     }
 }
