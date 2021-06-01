@@ -66,7 +66,7 @@ module.exports.getServicesByStoreId  = async (req, res) => {
 
 module.exports.bookASchedule = async (req, res) => {
     try {
-        req.body._id = new mongoose.Types.ObjectId
+        req.body._id = new mongoose.Types.ObjectId()
         let newBook = new Book(req.body)
         newBook.save()
         console.log(req.body)
