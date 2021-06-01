@@ -16,7 +16,7 @@ const bookSchema = Schema({
     staff: {type: mongoose.Types.ObjectId, ref: Staff},
     store: {type: mongoose.Types.ObjectId, ref: Store},
     customer: {type: mongoose.Types.ObjectId, ref: Customer},
-    services: [service: {type: mongoose.Types.ObjectId, ref: Service}],
+    services: [{type: mongoose.Types.ObjectId, ref: Service}],
     status: String,
     createdAt: {type: Date, default: Date.now}
 });
