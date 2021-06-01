@@ -65,7 +65,7 @@ module.exports.getServicesByStoreId  = async (req, res) => {
 
 module.exports.bookASchedule = async (req, res) => {
     try {
-        console.log(body)
+        console.log(req.body)
         res.status(200).json({status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
