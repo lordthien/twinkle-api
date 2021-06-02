@@ -4,11 +4,13 @@ const multer = require('multer')
 const router = express.Router()
 
 const customerAuth = require('../authenticates/customer.auth')
+const staffAuth = require('../authenticates/staff.auth')
 
+const staffController = require('../controllers/staffController')
 const customerController = require('../controllers/customerController')
 const appController = require('../controllers/appController')
 
-//Login, Logout
+//FOR CUSTOMER
 router.post('/signup', customerController.signUp)
 router.post('/login', customerController.login)
 router.post('/logout', customerAuth, 
@@ -48,5 +50,24 @@ appController.bookASchedule )
 router.post('/cancel', customerAuth, 
 appController.cancelBookById)
 router.post('/payment', appController.payment)
+
+//FOR STAFF
+router.post('/staff/login', staffController.login)
+router.post('/staff/logout', staffAuth, 
+staffController.logout)
+router.post('/staff/logoutAll', staffAuth, 
+staffController.logoutAll)
+//GET
+router.get('/staff/me', staffAuth, 
+staffController.getMyInformation)
+router.get('/staff/unpaidBooks', staffAuth, 
+staffController.getUnpaidBooks)
+router.get('/staff/bookById', staffAuth, 
+staffController.getBookById)
+router.post('/staff/cancel', staffAuth, 
+staffController.cancelBookById)
+router.post('/staff/setPaid', staffAuth, 
+staffController.setPaidBookById)
+
 
 module.exports = router
