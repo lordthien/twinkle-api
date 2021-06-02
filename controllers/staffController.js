@@ -95,3 +95,13 @@ module.exports.setPaidBookById = async (req, res) => {
         res.status(400).json({error:err})
     }
 }
+
+module.exports.changePassword = async (req, res) => {
+    try {
+        req.staff.password=req.body.password
+        req.staff.save()
+        res.status(200).json({book: req.staff, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}

@@ -68,6 +68,8 @@ router.post('/staff/cancel', staffAuth,
 staffController.cancelBookById)
 router.post('/staff/setPaid', staffAuth, 
 staffController.setPaidBookById)
+router.post('/staff/changePassword', staffAuth, 
+staffController.changePassword)
 
 
 module.exports = router
