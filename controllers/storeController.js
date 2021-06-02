@@ -95,6 +95,23 @@ module.exports.getAllBooks = async (req, res) => {
         res.status(400).json({ error: err })
     }
 }
+module.exports.getAllPosts = async (req, res) => {
+    try {
+        let posts = await Post.find({store: req.store._id})
+        res.status(200).json({ posts: posts, status: "Success" })
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
+module.exports.getPostById = async (req, res) => {
+    try {
+        let post = await Post.findOne({ _id: req.query.id })
+        res.status(200).json({ post: post, status: "Success" })
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
 
 module.exports.getStaffById = async (req, res) => {
     try {
@@ -114,6 +131,15 @@ module.exports.getServiceById = async (req, res) => {
     }
 }
 
+module.exports.getServiceTypeById = async (req, res) => {
+    try {
+        let service = await ServiceType.findOne({ _id: req.query.id })
+        res.status(200).json({ service: service, status: "Success" })
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
 module.exports.getBookById = async (req, res) => {
     try {
         let book = await Book.findOne({ _id: req.query.id }).populate("services").populate("customer")
@@ -122,6 +148,27 @@ module.exports.getBookById = async (req, res) => {
         res.status(400).json({ error: err })
     }
 }
+
+module.exports.createPost = async (req, res) => {
+    try {
+        req.body._id = new mongoose.Types.ObjectId()
+        if (req.file) {
+            req.body.thumbnail = `/${req.file.path.replace(/\\/g, "/")}`
+            let newPhoto = new Photo({_id: new mongoose.Types.ObjectId(), url: req.body.thumbnail,storeId: req.store._id})
+            newPhoto.save()
+        }
+        req.body.store = req.store._id
+        // if(req.body.startWorkingDate!=="")
+        //     req.body.startWorkingDate = new Date(req.body.startWorkingDate)
+        let newPost = new Post(req.body)
+        newPost.save().then(() => {
+            res.status(200).json({ post: newPost, status: "Success" })
+        })
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
 
 module.exports.createService = async (req, res) => {
     try {
@@ -234,6 +281,27 @@ module.exports.editStoreInformation = async (req, res) => {
             .then((result) => {
                 res.status(200).json({ result: result, status: "Success" })
             }).catch(err => res.status(202).json({ error: err, MESSAGE: "Fail to edit" }))
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
+module.exports.editPost = async (req, res) => {
+    try {
+        if (req.file) {
+            req.body.thumbnail = `/${req.file.path.replace(/\\/g, "/")}`
+            let newPhoto = new Photo({_id: new mongoose.Types.ObjectId(), url: req.body.thumbnail,storeId: req.store._id})
+            newPhoto.save()
+        }
+        let result = await Post.findOneAndUpdate({_id: req.query.id },req.body)
+        result.save().then(() => {
+            res.status(200).json({ result: result, status: "Success" })
+        }, error => {
+            console.error(error);
+            if (error.response) {
+                console.error(error.response.body)
+            }
+        });
     } catch (err) {
         res.status(400).json({ error: err })
     }
@@ -373,6 +441,22 @@ module.exports.removeService = async (req, res) => {
     }
 }
 
+module.exports.deletePost = async (req, res) => {
+    try {
+        Post.findOneAndDelete({ _id: req.body.id }, (error, result) => {
+            if (error) {
+                res.status(400).json({ error: error })
+            }
+            else {
+                res.status(200).json({ result: result, status: "Success" })
+            }
+        })
+
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
 module.exports.deleteService = async (req, res) => {
     try {
         Service.findOneAndDelete({ _id: req.body.id }, (error, result) => {
@@ -391,15 +475,12 @@ module.exports.deleteService = async (req, res) => {
 
 module.exports.deleteServiceType = async (req, res) => {
     try {
-        ServiceType.findOneAndDelete({ _id: req.body.id }, (error, result) => {
-            if (error) {
-                res.status(400).json({ error: error })
-            }
-            else {
-                res.status(200).json({ result: result, status: "Success" })
-            }
+        let serviceType = await ServiceType.findOne({ _id: req.body.id })
+        serviceType.services.forEach((ser) => {
+            Service.findByIdAndDelete(ser)
         })
-
+        serviceType.delete()
+        res.status(200).json({ result: result, status: "Success" })
     } catch (err) {
         res.status(400).json({ error: err })
     }
@@ -437,5 +518,52 @@ module.exports.fixPath = async (req,res) => {
     } catch (err) {
         throw err
         res.status(400).json({ error: err })
+    }
+}
+
+//BOOK
+
+module.exports.getUnpaidBooks = async (req, res) => {
+    try {
+        let books = await Book.find({status: "BOOKED", store: req.store._id}).populate("services").populate("staff").populate("store")
+        res.status(200).json({books: books, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.getPaidBooks = async (req, res) => {
+    try {
+        let books = await Book.find({status: "PAID", store: req.store._id}).populate("services").populate("staff").populate("store")
+        res.status(200).json({books: books, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.getCancelBooks = async (req, res) => {
+    try {
+        let books = await Book.find({status: "CANCEL", store: req.store._id}).populate("services").populate("staff").populate("store")
+        res.status(200).json({books: books, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.getAllBooks = async (req, res) => {
+    try {
+        let books = await Book.find({store: req.store._id}).populate("services").populate("staff").populate("store")
+        res.status(200).json({books: books, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.getBookById = async (req, res) => {
+    try {
+        let book = await Book.findOne({_id: req.query.id, store: req.store._id}).populate("services").populate("staff").populate("store")
+        res.status(200).json({book: book, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
     }
 }

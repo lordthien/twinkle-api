@@ -4,9 +4,13 @@ const Store = require('./Store.model');
 const { Schema } = mongoose;
 
 const postSchema = Schema({
+    title: String, // String is shorthand for {type: String}
+    author: String,
+    description: String,
     content: String,
-    photos: [{type: mongoose.Types.ObjectId, ref: Photo}],
+    thumbnail: {type: String, default: ""},
     store: {type: mongoose.Types.ObjectId, ref: Store},
+    isPublic: {type: Boolean, default: false},
     modifiedAt: {type: Date, default: Date.now},
     publishedAt: {type: Date, default: Date.now}
 });

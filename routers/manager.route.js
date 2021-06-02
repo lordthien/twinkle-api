@@ -60,6 +60,10 @@ router.get('/discountById',
 controller.getDiscountById)
 router.get('/allCustomers',
 controller.getAllCustomers)
+router.get('/allPosts',
+controller.getAllPosts)
+router.get('/postById',
+controller.getPostById)
 
 //Create features, roles, manager for manager
 router.post('/createFeature', //managerAuth, 
@@ -99,6 +103,8 @@ router.patch('/editDiscount', managerAuth,
 controller.editDiscount)
 router.patch('/addStoreToDiscount', managerAuth,
 controller.addStoreToDiscount)
+router.patch('/hidePostById', managerAuth,
+controller.hidePost)
 
 // router.delete('/deleteFeature', //managerAuth,
 // controller.deleteFeature)

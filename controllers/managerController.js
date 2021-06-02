@@ -14,6 +14,7 @@ const sgMail = require('@sendgrid/mail')
 const Staff = require('../models/Staff.model')
 const Customer = require('../models/Customer.model')
 const Photo = require('../models/Photo.model')
+const Post = require('../models/Post.model')
 
 require('dotenv').config()
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -130,6 +131,22 @@ module.exports.getAllCustomers  = async (req, res) => {
     try {
         const customers = await Customer.find()
         res.status(200).json({customers: customers,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+module.exports.getAllPosts  = async (req, res) => {
+    try {
+        const posts = await Post.find()
+        res.status(200).json({posts: posts,status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+module.exports.getPostById = async (req, res) => {
+    try {
+        const post = await Post.findById(req.query.id)
+        res.status(200).json({post: post,status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }
@@ -571,6 +588,19 @@ module.exports.addStoreToDiscount = async (req, res) => {
         let result = await Discount.findOne({_id: req.query.id})
         if(result.appliedStore.filter((e) => e==req.body.addedStore).length<1)
             result.appliedStore.push(req.body.addedStore)
+        result.save().then(() => {
+            res.status(200).json({result: result,status: "Success"})
+        })
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.hidePost = async (req, res) => {
+    if(req.manager.role.roleTitle=="System Owner")
+    try {
+        let result = await Post.findOne({_id: req.query.id})
+        result.isPublic=!result.isPublic
         result.save().then(() => {
             res.status(200).json({result: result,status: "Success"})
         })
