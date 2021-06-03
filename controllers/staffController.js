@@ -8,6 +8,8 @@ const Book = require('../models/Book.model')
 //res.status(202).json({message: "Không đúng tên cửa hàng", status: "Failed"})
 module.exports.login = async (req, res) => {
     try {
+        req.body.store = req.body.store.toLowerCase()
+        req.body.username = req.body.username.toLowerCase()
         let store = await Store.findOne({ username: req.body.store })
         if (!store) {
             res.status(202).json({ message: 'Store does not exist.', status: "Failed" })
@@ -91,6 +93,16 @@ module.exports.setPaidBookById = async (req, res) => {
         book.status="PAID"
         book.save()
         res.status(200).json({book: book, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.changeInformation = async (req, res) => {
+    try {
+        let staff = await Staff.findByIdAndUpdate({_id: req.staff._id}, req.body)
+        staff.save()
+        res.status(200).json({book: staff, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }
