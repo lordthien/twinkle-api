@@ -53,7 +53,16 @@ module.exports.logoutAll = async (req, res) => {
 
 module.exports.storeInformation = async (req, res) => {
     try {
-        res.status(200).json({ store: req.store, status: "Success" })
+        let store = await Store.findById(req.store._id).populate("services").populate("photos")
+        res.status(200).json({ store: store, status: "Success" })
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+module.exports.getAllPhotos = async (req, res) => {
+    try {
+        let store = await Photo.find({storeId: req.store._id})
+        res.status(200).json({ store: store, status: "Success" })
     } catch (err) {
         res.status(400).json({ error: err })
     }
@@ -95,6 +104,17 @@ module.exports.getAllBooks = async (req, res) => {
         res.status(400).json({ error: err })
     }
 }
+
+module.exports.getAllCustomers = async (req, res) => {
+    try {
+        let books = await Book.find({store: req.store._id}).populate("customer")
+        let customers = books.map((book) => book.customer).filter( (value, index, self) => self.indexOf(value) === index)
+        res.status(200).json({ customers: customers, status: "Success" })
+    } catch (err) {
+        res.status(400).json({ error: err })
+    }
+}
+
 module.exports.getAllPosts = async (req, res) => {
     try {
         let posts = await Post.find({store: req.store._id})
@@ -437,6 +457,26 @@ module.exports.removeService = async (req, res) => {
         });
     } catch (err) {
         console.log(err)
+        res.status(400).json({ error: err })
+    }
+}
+
+module.exports.deletePhoto = async (req, res) => {
+    try {
+        let photo = await Photo.findOne({ _id: req.body.id })
+        console.log(photo)
+        let store = await Store.findOne({_id: photo.storeId})
+        store.photos=store.photos.filter((p) => p._id!==photo._id)
+        store.save()
+        Photo.findOneAndDelete({ _id: req.body.id }, (error, result) => {
+            if (error) {
+                res.status(400).json({ error: error })
+            }
+            else {
+                res.status(200).json({ result: result, status: "Success" })
+            }
+        })
+    } catch (err) {
         res.status(400).json({ error: err })
     }
 }

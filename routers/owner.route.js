@@ -30,6 +30,7 @@ router.post('/logout', storeAuth, controller.logout )
 router.post('/logoutAll', storeAuth, controller.logoutAll )
 
 router.get('/me', storeAuth, controller.storeInformation )
+router.get('/allPhotos', storeAuth, controller.getAllPhotos )
 router.get('/allStaffs', storeAuth, controller.getAllStaffs )
 router.get('/allServices', storeAuth, controller.getAllServices )
 router.get('/allServicesType', storeAuth, controller.getAllServicesType )
@@ -44,6 +45,8 @@ router.get('/fixPath', controller.fixPath)
 //BOOKS
 router.get('/allBooks', storeAuth, 
 controller.getAllBooks)
+router.get('/allCustomers', storeAuth, 
+controller.getAllCustomers)
 router.get('/paidBooks', storeAuth, 
 controller.getPaidBooks)
 router.get('/unpaidBooks', storeAuth, 
@@ -68,6 +71,7 @@ router.patch('/uploadPhotos', storeAuth, upload.array("photos", 5), controller.a
 router.patch('/addServiceToStaff', storeAuth, controller.addService)
 router.patch('/removeServiceFromStaff', storeAuth, controller.removeService)
 
+router.delete('/deletePhoto', storeAuth, controller.deletePhoto)
 router.delete('/deletePost', storeAuth, controller.deletePost)
 router.delete('/deleteService', storeAuth, controller.deleteService)
 router.delete('/deleteServiceType', storeAuth, controller.deleteServiceType)
