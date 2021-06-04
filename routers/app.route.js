@@ -21,6 +21,8 @@ router.get('/me', customerAuth,
 customerController.getMyInformation)
 router.post('/editMe', customerAuth, 
 customerController.editMyInformation)
+router.get('/nearestBook', customerAuth, 
+customerController.getNearestBook)
 
 router.get('/allStores',
 appController.getAllStores)
@@ -62,6 +64,8 @@ router.get('/staff/me', staffAuth,
 staffController.getMyInformation)
 router.get('/staff/unpaidBooks', staffAuth, 
 staffController.getUnpaidBooks)
+router.get('/staff/nearestBook', staffAuth, 
+staffController.getNearestBook)
 router.get('/staff/bookById', staffAuth, 
 staffController.getBookById)
 router.post('/staff/cancel', staffAuth, 

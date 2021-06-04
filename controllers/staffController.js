@@ -76,6 +76,16 @@ module.exports.getBookById = async (req, res) => {
     }
 }
 
+module.exports.getNearestBook = async (req, res) => {
+    try {
+        let book = await Book.find({staff: req.staff._id}).populate("services").populate("customer").sort({schedule: 1})
+        book=book.filter((book) => book.status!=="CANCEL").filter((book) => book.schedule.getTime()>=(new Date()).getTime())[0]
+        res.status(200).json({book: book, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
 module.exports.cancelBookById = async (req, res) => {
     try {
         let book = await Book.findOne({_id: req.query.id, staff: req.staff._id})
