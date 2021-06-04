@@ -20,6 +20,15 @@ const staffSchema = new Schema({
   notifications: []
 })
 
+
+staffSchema.methods.toJSON = function () {
+  const staff = this
+  const staffObject = staff.toObject()
+  // Replace cai \ thanh cai / ni
+  staffObject.tokens=[]
+  return staffObject
+}
+
 staffSchema.methods.generateAuthToken = async function () {
   try {
     let staff = this

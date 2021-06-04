@@ -17,6 +17,15 @@ const customerSchema = new Schema({
   notifications: []
 })
 
+
+customerSchema.methods.toJSON = function () {
+  const customer = this
+  const customerObject = customer.toObject()
+  // Replace cai \ thanh cai / ni
+  customerObject.tokens=[]
+  return customerObject
+}
+
 customerSchema.methods.generateAuthToken = async function () {
   try {
     let user = this

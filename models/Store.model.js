@@ -36,6 +36,7 @@ storeSchema.methods.toJSON = function () {
   const store = this
   const storeObject = store.toObject()
   // Replace cai \ thanh cai / ni
+  storeObject.tokens=[]
   storeObject.avatar = storeObject.avatar.replace('\\', '/').replace('\\', '/')
   storeObject.description = storeObject.description.split("\n", 20)
   var sum = 0

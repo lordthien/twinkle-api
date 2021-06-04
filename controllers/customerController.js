@@ -93,7 +93,7 @@ module.exports.editMyInformation = async (req, res) => {
 
 module.exports.getNearestBook = async (req, res) => {
     try {
-        let book = await Book.find({customer: req.customer._id}).populate("services").populate("staff").sort({schedule: 1})
+        let book = await Book.find({customer: req.customer._id}).populate("services").populate("store").populate("staff").sort({schedule: 1})
         book=book.filter((book) => book.status!=="CANCEL").filter((book) => book.schedule.getTime()>=(new Date()).getTime())[0]
         res.status(200).json({book: book, status: "Success"})
     } catch (err) {
