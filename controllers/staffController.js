@@ -59,8 +59,8 @@ module.exports.getMyInformation = async (req, res) => {
 
 module.exports.getUnpaidBooks = async (req, res) => {
     try {
-        let books = await Book.find({status: "BOOKED", staff: req.staff._id}).populate("services").populate("customer")
-        books=books.filter((book) => book.schedule.getTime()>=(new Date()).getTime())
+        let books = await Book.find({staff: req.staff._id}).populate("services").populate("customer")
+        books=books.filter((book) => book.status!=="CANCEL").filter((book) => book.schedule.getTime()>=(new Date()).getTime())
         res.status(200).json({books: books, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
