@@ -96,15 +96,6 @@ module.exports.getAllServicesType = async (req, res) => {
     }
 }
 
-module.exports.getAllBooks = async (req, res) => {
-    try {
-        let books = await Book.find({storeId: req.store._id}).populate("services").populate("customer").populate("staff")
-        res.status(200).json({ books: books, status: "Success" })
-    } catch (err) {
-        res.status(400).json({ error: err })
-    }
-}
-
 module.exports.getAllCustomers = async (req, res) => {
     try {
         let books = await Book.find({store: req.store._id}).populate("customer")
@@ -155,15 +146,6 @@ module.exports.getServiceTypeById = async (req, res) => {
     try {
         let service = await ServiceType.findOne({ _id: req.query.id })
         res.status(200).json({ service: service, status: "Success" })
-    } catch (err) {
-        res.status(400).json({ error: err })
-    }
-}
-
-module.exports.getBookById = async (req, res) => {
-    try {
-        let book = await Book.findOne({ _id: req.query.id }).populate("services").populate("customer").populate("staff")
-        res.status(200).json({ book: book, status: "Success" })
     } catch (err) {
         res.status(400).json({ error: err })
     }
@@ -565,7 +547,7 @@ module.exports.fixPath = async (req,res) => {
 
 module.exports.getUnpaidBooks = async (req, res) => {
     try {
-        let books = await Book.find({status: "BOOKED", store: req.store._id}).populate("services").populate("staff").populate("store")
+        let books = await Book.find({status: "BOOKED", store: req.store._id}).populate("services").populate("staff").populate("store").populate("customer")
         res.status(200).json({books: books, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
@@ -574,7 +556,7 @@ module.exports.getUnpaidBooks = async (req, res) => {
 
 module.exports.getPaidBooks = async (req, res) => {
     try {
-        let books = await Book.find({status: "PAID", store: req.store._id}).populate("services").populate("staff").populate("store")
+        let books = await Book.find({status: "PAID", store: req.store._id}).populate("services").populate("staff").populate("store").populate("customer")
         res.status(200).json({books: books, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
@@ -583,7 +565,7 @@ module.exports.getPaidBooks = async (req, res) => {
 
 module.exports.getCancelBooks = async (req, res) => {
     try {
-        let books = await Book.find({status: "CANCEL", store: req.store._id}).populate("services").populate("staff").populate("store")
+        let books = await Book.find({status: "CANCEL", store: req.store._id}).populate("services").populate("staff").populate("store").populate("customer")
         res.status(200).json({books: books, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
@@ -592,7 +574,7 @@ module.exports.getCancelBooks = async (req, res) => {
 
 module.exports.getAllBooks = async (req, res) => {
     try {
-        let books = await Book.find({store: req.store._id}).populate("services").populate("staff").populate("store")
+        let books = await Book.find({store: req.store._id}).populate("services").populate("staff").populate("store").populate("customer")
         res.status(200).json({books: books, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
@@ -601,7 +583,7 @@ module.exports.getAllBooks = async (req, res) => {
 
 module.exports.getBookById = async (req, res) => {
     try {
-        let book = await Book.findOne({_id: req.query.id, store: req.store._id}).populate("services").populate("staff").populate("store")
+        let book = await Book.findOne({_id: req.query.id, store: req.store._id}).populate("services").populate("staff").populate("store").populate("customer")
         res.status(200).json({book: book, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
