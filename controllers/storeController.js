@@ -98,7 +98,7 @@ module.exports.getAllServicesType = async (req, res) => {
 
 module.exports.getAllBooks = async (req, res) => {
     try {
-        let books = await Book.find({storeId: req.store._id})
+        let books = await Book.find({storeId: req.store._id}).populate("services").populate("customer").populate("staff")
         res.status(200).json({ books: books, status: "Success" })
     } catch (err) {
         res.status(400).json({ error: err })
@@ -162,7 +162,7 @@ module.exports.getServiceTypeById = async (req, res) => {
 
 module.exports.getBookById = async (req, res) => {
     try {
-        let book = await Book.findOne({ _id: req.query.id }).populate("services").populate("customer")
+        let book = await Book.findOne({ _id: req.query.id }).populate("services").populate("customer").populate("staff")
         res.status(200).json({ book: book, status: "Success" })
     } catch (err) {
         res.status(400).json({ error: err })
