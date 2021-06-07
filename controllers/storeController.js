@@ -8,6 +8,7 @@ const Book = require('../models/Book.model')
 const shortid = require('shortid')
 const sgMail = require('@sendgrid/mail')
 const ServiceType = require('../models/ServiceType.model')
+const Review = require('../models/Review.model')
 
 require('dotenv').config()
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -576,6 +577,15 @@ module.exports.getAllBooks = async (req, res) => {
     try {
         let books = await Book.find({store: req.store._id}).populate("services").populate("staff").populate("store").populate("customer")
         res.status(200).json({books: books, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.getAllReviews = async (req, res) => {
+    try {
+        let reviews = await Review.find({storeId: req.store._id}).populate("book")
+        res.status(200).json({reviews: reviews, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }

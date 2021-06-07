@@ -4,6 +4,7 @@ const slug = require('vietnamese-slug')
 const Staff = require('../models/Staff.model')
 const ServiceType = require('../models/ServiceType.model')
 const Book = require('../models/Book.model')
+const Review = require('../models/Review.model')
 
 module.exports.getAllStores  = async (req, res) => {
     try {
@@ -121,12 +122,43 @@ module.exports.getBookById = async (req, res) => {
     }
 }
 
+module.exports.getReviewByBookId= async (req, res) => {
+    try {
+        let review = await Review.findOne({book: req.query.id}).populate("book")
+        res.status(200).json({review: review, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
 module.exports.cancelBookById = async (req, res) => {
     try {
         let book = await Book.findOne({_id: req.query.id, customer: req.customer._id})
         book.status="CANCEL"
         book.save()
         res.status(200).json({book: book, status: "Success"})
+    } catch (err) {
+        res.status(400).json({error:err})
+    }
+}
+
+module.exports.reviewABookById = async (req, res) => {
+    try {
+        req.body._id = new mongoose.Types.ObjectId()
+        let book = await Book.findOne({_id: req.query.id, customer: req.customer._id})
+        if (req.files) {
+            let newPhoto
+            for(let i=0; i<req.files.length; i++) {
+                newPhoto = new Photo({_id: new mongoose.Types.ObjectId(),url: `/${req.files[i].path.replace(/\\/g, "/")}`, storeId: req.store._id})
+                newPhoto.save()
+                result.photos.push(newPhoto._id)
+            }
+        }
+        req.body.storeId = book.store
+        req.body,customerId = req.customer._id
+        let newReview = new Review(req.body)
+        newReview.save()
+        res.status(200).json({review: newReview, status: "Success"})
     } catch (err) {
         res.status(400).json({error:err})
     }

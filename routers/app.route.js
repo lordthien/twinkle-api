@@ -34,6 +34,8 @@ router.get('/staffsByStoreId',
 appController.getAllStaffsByStoreId)
 router.get('/servicesByStoreId',
 appController.getServicesByStoreId)
+router.get('/reviewByBookId',
+appController.getReviewByBookId)
 router.get('/search',
 appController.search)
 
@@ -51,6 +53,8 @@ router.post('/booking', customerAuth,
 appController.bookASchedule )
 router.post('/cancel', customerAuth, 
 appController.cancelBookById)
+router.post('/review', customerAuth, 
+appController.reviewABookById)
 router.post('/payment', appController.payment)
 
 //FOR STAFF

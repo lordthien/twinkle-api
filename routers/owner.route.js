@@ -47,6 +47,8 @@ router.get('/allBooks', storeAuth,
 controller.getAllBooks)
 router.get('/allCustomers', storeAuth, 
 controller.getAllCustomers)
+router.get('/allReviews', storeAuth, 
+controller.getAllReviews)
 router.get('/paidBooks', storeAuth, 
 controller.getPaidBooks)
 router.get('/unpaidBooks', storeAuth, 
