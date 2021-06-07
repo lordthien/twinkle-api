@@ -155,7 +155,8 @@ module.exports.reviewABookById = async (req, res) => {
             }
         }
         req.body.storeId = book.store
-        req.body,customerId = req.customer._id
+        req.body.customerId = req.customer._id
+        req.body.book = req.query.id
         let newReview = new Review(req.body)
         newReview.save()
         res.status(200).json({review: newReview, status: "Success"})
