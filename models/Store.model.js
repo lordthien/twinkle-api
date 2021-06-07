@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const url = require('url')
 const jwt = require('jsonwebtoken')
-const Review = require('./Review.model')
 const Photo = require('./Photo.model')
 const StoreType = require('./StoreType.model')
 const Staff = require('./Staff.model')
@@ -25,8 +24,6 @@ const storeSchema = new Schema({
   staffs: [{ type: mongoose.Types.ObjectId, ref: Staff}],
   //Type of Store
   storeType: { type: mongoose.Types.ObjectId, ref: StoreType },
-  //Reviews
-  reviews: [{type: mongoose.Types.ObjectId, ref: Review}],
   tokens: [{token: String}],
   //Store Owner is also a user but have a medal to improve that this user is a store owner
   // storeOwner: { type: mongoose.Types.ObjectId, default: null },

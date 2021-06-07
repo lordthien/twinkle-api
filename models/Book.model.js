@@ -1,6 +1,5 @@
 const mongoose= require('mongoose');
 const Customer = require('./Customer.model');
-const Discount = require('./Discount.model');
 const Service = require('./Service.model');
 const Staff = require('./Staff.model');
 const Store = require('./Store.model');
